@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Inventário - Elite Skins</title>
+  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cs2-primary-gold: #FFD700;
+      --cs2-secondary-blue: #131E2B;
+      --cs2-bg-dark: #0A0E12;
+      --cs2-text-light: #F5F5F5;
+      --cs2-accent-orange: #FF6600;
+      --cs2-accent-green: #4B9E2A;
+      --cs2-danger-red: #DD3333;
+      --cs2-info-blue: #2389DA;
+      --cs2-card-bg: rgba(19, 30, 43, 0.8);
+      --cs2-card-border: rgba(255, 215, 0, 0.2);
+      --cs2-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      font-family: "Rajdhani", sans-serif; 
+      background-color: var(--cs2-bg-dark);
+      background-image: radial-gradient(circle at center, #182233 0%, #0A0E12 100%);
+      color: var(--cs2-text-light); 
+      margin: 0; 
+      padding: 0;
+      min-height: 100vh;
+    }
+    
+    .container { 
+      max-width: 1400px; 
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1, h2, h3 { 
+      font-family: "Orbitron", sans-serif; 
+      color: var(--cs2-primary-gold); 
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+    
+    h3 {
+      font-size: 1.4rem;
+      border-bottom: 1px solid var(--cs2-primary-gold);
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .header { 
+      text-align: center; 
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--cs2-card-border);
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+    
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: var(--cs2-card-bg);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid var(--cs2-card-border);
+      text-align: center;
+      box-shadow: var(--cs2-shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+      border-color: var(--cs2-primary-gold);
+    }
+    
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--cs2-primary-gold);
+      margin: 10px 0;
+    }
+    
+    .stat-label {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+    }
+    
+    .dashboard-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 20px; 
+      margin-bottom: 30px; 
+    }
+    
+    .dashboard-card { 
+      background: var(--cs2-card-bg);
+      border-radius: 8px; 
+      padding: 20px; 
+      border: 1px solid var(--cs2-card-border);
+      box-shadow: var(--cs2-shadow);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .dashboard-card:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+      border-color: rgba(255, 215, 0, 0.5);
+    }
+    
+    .dashboard-wide { 
+      grid-column: span 2; 
+    }
+    
+    .chart-container { 
+      width: 100%; 
+      height: 350px;
+      flex-grow: 1;
+    }
+    
+    .chart-container-large {
+      height: 450px;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 30px;
+      border-top: 1px solid var(--cs2-card-border);
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+    
+    /* Tabs para alternar entre visualizações */
+    .view-tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--cs2-card-border);
+      padding-bottom: 5px;
+    }
+    
+    .view-tab {
+      padding: 10px 20px;
+      margin-right: 10px;
+      background: none;
+      border: none;
+      color: var(--cs2-text-light);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .view-tab.active {
+      color: var(--cs2-primary-gold);
+      border-bottom: 3px solid var(--cs2-primary-gold);
+    }
+    
+    .view-tab:hover {
+      color: var(--cs2-primary-gold);
+    }
+    
+    .view-content {
+      display: none;
+    }
+    
+    .view-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    
+    /* Estilo para os cards de skins */
+    .skins-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .search-filter {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .search-input {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: 1px solid var(--cs2-card-border);
+      background: rgba(10,14,18,0.7);
+      color: var(--cs2-text-light);
+      font-family: 'Rajdhani', sans-serif;
+      width: 200px;
+    }
+    
+    .filter-select {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: 1px solid var(--cs2-card-border);
+      background: rgba(10,14,18,0.7);
+      color: var(--cs2-text-light);
+      font-family: 'Rajdhani', sans-serif;
+    }
+    
+    .sort-controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .sort-button {
+      padding: 8px 15px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--cs2-secondary-blue) 0%, rgba(10,14,18,0.8) 100%);
+      border: 1px solid var(--cs2-card-border);
+      color: var(--cs2-text-light);
+      font-family: 'Rajdhani', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .sort-button:hover {
+      background: linear-gradient(135deg, var(--cs2-primary-gold) 0%, var(--cs2-accent-orange) 100%);
+      color: var(--cs2-bg-dark);
+      border-color: transparent;
+    }
+    
+    .skins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .skin-card {
+      background: var(--cs2-card-bg);
+      border-radius: 8px;
+      border: 1px solid var(--cs2-card-border);
+      overflow: hidden;
+      box-shadow: var(--cs2-shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .skin-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+      border-color: var(--cs2-primary-gold);
+    }
+    
+    .skin-img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      background: rgba(10,14,18,0.7);
+      padding: 10px;
+    }
+    
+    .skin-placeholder {
+      width: 100%;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,14,18,0.7);
+      color: var(--cs2-text-light);
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+    
+    .skin-details {
+      padding: 15px;
+    }
+    
+    .skin-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--cs2-text-light);
+      height: 42px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    
+    .skin-exterior {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      background: rgba(255,215,0,0.1);
+      color: var(--cs2-text-light);
+    }
+    
+    .skin-price {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--cs2-primary-gold);
+      margin-top: 10px;
+    }
+    
+    .skin-quantity {
+      display: inline-block;
+      font-size: 0.9rem;
+      padding: 2px 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      background: rgba(75,158,42,0.2);
+      color: var(--cs2-accent-green);
+    }
+    
+    .skin-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+    
+    .skin-source {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    
+    /* Badges para raridade */
+    .rarity-badge {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    
+    @media (max-width: 1200px) {
+      .summary-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard-grid { 
+        grid-template-columns: 1fr; 
+      }
+      
+      .dashboard-wide { 
+        grid-column: span 1; 
+      }
+      
+      .summary-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-container,
+      .chart-container-large {
+        height: 300px;
+      }
+      
+      .skins-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      }
+      
+      .skins-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-filter, .sort-controls {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Dashboard de Inventário CS2</h1>
+      <p>Elite Skins - Análise detalhada do seu inventário</p>
+    </div>
+    
+    <div class="summary-stats">
+      <div class="stat-card">
+        <div class="stat-label">Valor Total</div>
+        <div class="stat-value" id="total-value">R$ 0,00</div>
+        <div class="stat-desc">Valor estimado do inventário</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Total de Itens</div>
+        <div class="stat-value" id="total-items">0</div>
+        <div class="stat-desc">Número de skins e itens</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Valor Médio</div>
+        <div class="stat-value" id="avg-value">R$ 0,00</div>
+        <div class="stat-desc">Valor médio por item</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Item mais valioso</div>
+        <div class="stat-value" id="max-value">R$ 0,00</div>
+        <div class="stat-desc" id="max-item-name">Nenhum item</div>
+      </div>
+    </div>
+    
+    <!-- Tabs para alternar entre visualizações -->
+    <div class="view-tabs">
+      <button class="view-tab active" data-tab="charts">Gráficos</button>
+      <button class="view-tab" data-tab="items">Itens do Inventário</button>
+    </div>
+    
+    <!-- Visualização 1: Gráficos -->
+    <div id="charts-view" class="view-content active">
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <h3>Distribuição por Categoria</h3>
+          <div id="category-chart" class="chart-container"></div>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>Distribuição por Origem</h3>
+          <div id="source-chart" class="chart-container"></div>
+        </div>
+        
+        <div class="dashboard-card dashboard-wide">
+          <h3>Itens Mais Valiosos</h3>
+          <div id="top-items-chart" class="chart-container chart-container-large"></div>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>Distribuição por Desgaste</h3>
+          <div id="wear-chart" class="chart-container"></div>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>Distribuição por Raridade</h3>
+          <div id="rarity-chart" class="chart-container"></div>
+        </div>
+        
+        <div class="dashboard-card dashboard-wide">
+          <h3>Valor por Categoria</h3>
+          <div id="category-value-chart" class="chart-container"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Visualização 2: Cards de Itens -->
+    <div id="items-view" class="view-content">
+      <div class="skins-controls">
+        <div class="search-filter">
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar por nome...">
+          <select id="category-filter" class="filter-select">
+            <option value="">Todas categorias</option>
+          </select>
+          <select id="exterior-filter" class="filter-select">
+            <option value="">Todos desgastes</option>
+          </select>
+        </div>
+        <div class="sort-controls">
+          <button id="sort-price-desc" class="sort-button">Preço ↓</button>
+          <button id="sort-price-asc" class="sort-button">Preço ↑</button>
+          <button id="sort-name" class="sort-button">Nome</button>
+        </div>
+      </div>
+      
+      <div id="skins-grid" class="skins-grid">
+        <!-- Cards de skins serão gerados dinamicamente aqui -->
+      </div>
+    </div>
+    
+    <div class="footer">
+      Elite Skins © 2023-2024 | Todos os preços são estimativas baseadas no mercado Steam
+    </div>
+  </div>
+
+  <script>
+    // Os dados do inventário serão recebidos via localStorage
+    const inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || {items: []};
+    
+    // Cores para gráficos
+    const cs2Colors = ["#FFD700", "#FF6600", "#4B9E2A", "#2389DA", "#DD3333", "#8847ff", "#00B3E6", 
+                       "#E6B333", "#3366E6", "#B34D4D", "#80B300", "#E6B3B3", "#6680B3", "#66991A"];
+    
+    // Mapeamento de raridade para cores
+    const rarityColors = {
+      'Consumer Grade': '#b0c3d9',
+      'Industrial Grade': '#5e98d9',
+      'Mil-Spec Grade': '#4b69ff',
+      'Restricted': '#8847ff',
+      'Classified': '#d32ce6',
+      'Covert': '#eb4b4b',
+      'Knife': '#caab05',
+      'Extraordinary': '#caab05',
+      'Contraband': '#e4ae39'
+    };
+    
+    // Formatar valores monetários
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('pt-BR', { 
+        style: 'currency', 
+        currency: 'BRL' 
+      }).format(value);
+    }
+    
+    // Truncar textos longos para os gráficos
+    function truncateText(text, maxLength = 20) {
+      if (!text) return "N/A";
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength - 3) + '...';
+    }
+    
+    // Alternar entre visualizações
+    function setupTabs() {
+      const tabs = document.querySelectorAll('.view-tab');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remover classe active de todas as tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          
+          // Adicionar classe active na tab clicada
+          tab.classList.add('active');
+          
+          // Buscar o conteúdo correspondente
+          const tabId = tab.getAttribute('data-tab');
+          
+          // Remover classe active de todos os conteúdos
+          document.querySelectorAll('.view-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          
+          // Adicionar classe active no conteúdo correspondente
+          document.getElementById(`${tabId}-view`).classList.add('active');
+        });
+      });
+    }
+    
+    // Gerar cards de skins
+    function renderSkinCards(items) {
+      const skinsGrid = document.getElementById('skins-grid');
+      skinsGrid.innerHTML = '';
+      
+      if (!items || items.length === 0) {
+        skinsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 50px 0;">Nenhum item encontrado</p>';
+        return;
+      }
+      
+      items.forEach(item => {
+        const rarityColor = rarityColors[item.rarity] || '#FFD700';
+        const card = document.createElement('div');
+        card.className = 'skin-card';
+        card.style.borderLeft = `3px solid ${rarityColor}`;
+        
+        // Placeholder para imagem (normalmente usaríamos a imagem da skin)
+        const imageContent = item.image_url 
+          ? `<img src="${item.image_url}" alt="${item.name}" class="skin-img">`
+          : `<div class="skin-placeholder">Imagem não disponível</div>`;
+        
+        card.innerHTML = `
+          ${imageContent}
+          <div class="skin-details">
+            <div class="skin-name">
+              <span class="rarity-badge" style="background-color: ${rarityColor}"></span>
+              ${item.name || 'Nome desconhecido'}
+            </div>
+            <span class="skin-exterior">${item.exterior || 'Sem desgaste'}</span>
+            <div class="skin-meta">
+              <span class="skin-source">${item.source === 'storage_unit' ? 'Unidade de Armazenamento' : 'Inventário'}</span>
+              ${item.quantity > 1 ? `<span class="skin-quantity">x${item.quantity}</span>` : ''}
+            </div>
+            <div class="skin-price">${formatCurrency(item.price || 0)}</div>
+          </div>
+        `;
+        
+        skinsGrid.appendChild(card);
+      });
+    }
+    
+    // Configurar filtros e ordenação
+    function setupFilters() {
+      // Preencher filtros com valores únicos
+      const categories = new Set();
+      const exteriors = new Set();
+      
+      inventoryData.items.forEach(item => {
+        if (item.category) categories.add(item.category);
+        if (item.exterior) exteriors.add(item.exterior);
+      });
+      
+      // Preencher select de categorias
+      const categoryFilter = document.getElementById('category-filter');
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+      });
+      
+      // Preencher select de exteriors
+      const exteriorFilter = document.getElementById('exterior-filter');
+      exteriors.forEach(exterior => {
+        const option = document.createElement('option');
+        option.value = exterior;
+        option.textContent = exterior;
+        exteriorFilter.appendChild(option);
+      });
+      
+      // Configurar eventos de filtro
+      function applyFilters() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        const categoryValue = document.getElementById('category-filter').value;
+        const exteriorValue = document.getElementById('exterior-filter').value;
+        
+        // Filtrar itens
+        let filteredItems = [...inventoryData.items];
+        
+        if (searchTerm) {
+          filteredItems = filteredItems.filter(item => 
+            (item.name && item.name.toLowerCase().includes(searchTerm))
+          );
+        }
+        
+        if (categoryValue) {
+          filteredItems = filteredItems.filter(item => item.category === categoryValue);
+        }
+        
+        if (exteriorValue) {
+          filteredItems = filteredItems.filter(item => item.exterior === exteriorValue);
+        }
+        
+        // Renderizar itens filtrados
+        renderSkinCards(filteredItems);
+      }
+      
+      // Adicionar listeners
+      document.getElementById('search-input').addEventListener('input', applyFilters);
+      document.getElementById('category-filter').addEventListener('change', applyFilters);
+      document.getElementById('exterior-filter').addEventListener('change', applyFilters);
+      
+      // Botões de ordenação
+      document.getElementById('sort-price-desc').addEventListener('click', () => {
+        const items = [...document.querySelectorAll('#skins-grid .skin-card')];
+        const container = document.getElementById('skins-grid');
+        
+        const sorted = [...inventoryData.items].sort((a, b) => (b.price || 0) - (a.price || 0));
+        renderSkinCards(sorted);
+      });
+      
+      document.getElementById('sort-price-asc').addEventListener('click', () => {
+        const sorted = [...inventoryData.items].sort((a, b) => (a.price || 0) - (b.price || 0));
+        renderSkinCards(sorted);
+      });
+      
+      document.getElementById('sort-name').addEventListener('click', () => {
+        const sorted = [...inventoryData.items].sort((a, b) => {
+          const nameA = (a.name || '').toUpperCase();
+          const nameB = (b.name || '').toUpperCase();
+          return nameA.localeCompare(nameB);
+        });
+        renderSkinCards(sorted);
+      });
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+      // Preencher estatísticas resumidas
+      const totalValue = inventoryData.items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+      const totalItems = inventoryData.items.length;
+      const avgValue = totalItems > 0 ? totalValue / totalItems : 0;
+      
+      // Encontrar item mais valioso
+      let maxItem = {price: 0, name: "Nenhum item"};
+      if (inventoryData.items.length > 0) {
+        maxItem = inventoryData.items.reduce((max, item) => 
+          (item.price > max.price) ? item : max, {price: 0, name: "Nenhum item"});
+      }
+      
+      document.getElementById('total-value').textContent = formatCurrency(totalValue);
+      document.getElementById('total-items').textContent = totalItems;
+      document.getElementById('avg-value').textContent = formatCurrency(avgValue);
+      document.getElementById('max-value').textContent = formatCurrency(maxItem.price || 0);
+      document.getElementById('max-item-name').textContent = truncateText(maxItem.name || "Nenhum item");
+      
+      // Configurações comuns para todos os gráficos
+      const chartConfig = {
+        responsive: true,
+        displayModeBar: false,
+        staticPlot: false,
+        hovermode: 'closest',
+        font: {family: '"Rajdhani", sans-serif', color: "#F5F5F5"},
+        hoverlabel: {bgcolor: "#131E2B", font: {family: '"Rajdhani", sans-serif', size: 14}}
+      };
+      
+      // Categorias
+      const categories = {};
+      inventoryData.items.forEach(item => {
+        const category = item.category || "Outros";
+        if (!categories[category]) categories[category] = 0;
+        categories[category] += (item.price || 0) * (item.quantity || 1);
+      });
+      
+      Plotly.newPlot("category-chart", [{
+        type: "pie",
+        labels: Object.keys(categories),
+        values: Object.values(categories),
+        hole: 0.4,
+        textinfo: "label+percent",
+        insidetextorientation: "radial",
+        marker: {colors: cs2Colors},
+        hovertemplate: '%{label}: %{value:.2f} (%{percent})<extra></extra>'
+      }], {
+        ...chartConfig,
+        paper_bgcolor: "rgba(0,0,0,0)", 
+        plot_bgcolor: "rgba(0,0,0,0)"
+      });
+      
+      // Origem
+      const sources = {"Inventário": 0, "Unidade de Armazenamento": 0};
+      inventoryData.items.forEach(item => {
+        const source = item.source === "storage_unit" ? "Unidade de Armazenamento" : "Inventário";
+        sources[source] += (item.price || 0) * (item.quantity || 1);
+      });
+      
+      Plotly.newPlot("source-chart", [{
+        type: "pie",
+        labels: Object.keys(sources),
+        values: Object.values(sources),
+        hole: 0.4,
+        textinfo: "label+percent",
+        insidetextorientation: "radial",
+        marker: {colors: ["#FFD700", "#2389DA"]},
+        hovertemplate: '%{label}: %{value:.2f} (%{percent})<extra></extra>'
+      }], {
+        ...chartConfig,
+        paper_bgcolor: "rgba(0,0,0,0)", 
+        plot_bgcolor: "rgba(0,0,0,0)"
+      });
+      
+      // Itens mais valiosos - Aumentamos para 15 itens
+      const topItems = [...inventoryData.items]
+        .sort((a, b) => (b.price || 0) - (a.price || 0))
+        .slice(0, 15);
+      
+      // Truncar nomes longos para melhor visualização
+      const topItemNames = topItems.map(item => truncateText(item.name, 25));
+      
+      Plotly.newPlot("top-items-chart", [{
+        type: "bar",
+        x: topItemNames,
+        y: topItems.map(item => item.price || 0),
+        marker: {
+          color: topItems.map((_, i) => cs2Colors[i % cs2Colors.length]),
+          line: {width: 1, color: 'rgba(0,0,0,0.3)'}
+        },
+        hovertemplate: '%{x}<br>Valor: %{y:.2f}<extra></extra>'
+      }], {
+        ...chartConfig,
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        margin: {b: 120, l: 60, r: 30, t: 30},
+        xaxis: {
+          tickangle: 45,
+          automargin: true,
+          tickfont: {size: 10}
+        },
+        yaxis: {
+          title: 'Valor (R$)',
+          automargin: true
+        }
+      });
+      
+      // Desgaste
+      const wearTypes = {};
+      inventoryData.items.forEach(item => {
+        const wear = item.exterior || "Sem Desgaste";
+        wearTypes[wear] = (wearTypes[wear] || 0) + 1;
+      });
+      
+      Plotly.newPlot("wear-chart", [{
+        type: "pie",
+        labels: Object.keys(wearTypes),
+        values: Object.values(wearTypes),
+        hole: 0.4,
+        textinfo: "label+percent",
+        insidetextorientation: "radial",
+        marker: {colors: cs2Colors},
+        hovertemplate: '%{label}: %{value} itens (%{percent})<extra></extra>'
+      }], {
+        ...chartConfig,
+        paper_bgcolor: "rgba(0,0,0,0)", 
+        plot_bgcolor: "rgba(0,0,0,0)"
+      });
+      
+      // Raridade
+      const rarityTypes = {};
+      inventoryData.items.forEach(item => {
+        const rarity = item.rarity || "Normal";
+        rarityTypes[rarity] = (rarityTypes[rarity] || 0) + 1;
+      });
+      
+      Plotly.newPlot("rarity-chart", [{
+        type: "pie",
+        labels: Object.keys(rarityTypes),
+        values: Object.values(rarityTypes),
+        hole: 0.4,
+        textinfo: "label+percent",
+        insidetextorientation: "radial",
+        marker: {colors: cs2Colors},
+        hovertemplate: '%{label}: %{value} itens (%{percent})<extra></extra>'
+      }], {
+        ...chartConfig,
+        paper_bgcolor: "rgba(0,0,0,0)", 
+        plot_bgcolor: "rgba(0,0,0,0)"
+      });
+      
+      // Valor por Categoria (Novo gráfico)
+      const categoryValues = Object.entries(categories)
+        .sort((a, b) => b[1] - a[1]) // Ordenar por valor decrescente
+        .slice(0, 10); // Pegar as 10 principais categorias
+      
+      Plotly.newPlot("category-value-chart", [{
+        type: "bar",
+        x: categoryValues.map(item => item[0]),
+        y: categoryValues.map(item => item[1]),
+        marker: {
+          color: categoryValues.map((_, i) => cs2Colors[i % cs2Colors.length]),
+          line: {width: 1, color: 'rgba(0,0,0,0.3)'}
+        },
+        hovertemplate: '%{x}<br>Valor Total: %{y:.2f}<extra></extra>'
+      }], {
+        ...chartConfig,
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        margin: {b: 100, l: 60, r: 30, t: 30},
+        xaxis: {
+          tickangle: 45,
+          automargin: true
+        },
+        yaxis: {
+          title: 'Valor Total (R$)',
+          automargin: true
+        }
+      });
+      
+      // Setup para visualização de cards
+      setupTabs();
+      
+      // Renderizar cards de skins para a tab de itens
+      renderSkinCards(inventoryData.items);
+      
+      // Configurar filtros e ordenação
+      setupFilters();
+    });
+  </script>
+</body>
+</html> 
