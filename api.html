@@ -270,19 +270,6 @@
     </div>
   </header>
 
-  <!-- SheetJS library for Excel export -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
-  
-  <!-- Plotly.js for interactive charts -->
-  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
-  
-  <style>
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
-
   <main style="padding-top: 80px;">
   <!-- ***** Hero Section ***** -->
   <section class="hero" id="hero" style="padding-top:60px; padding-bottom:60px; position: relative; overflow: hidden;">
@@ -362,12 +349,6 @@
           <div id="api-status-indicator" style="width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background-color: #777;"></div>
           <span id="api-status-text" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); font-size: 0.9rem;">Verificando status da API...</span>
         </div>
-        
-        <!-- Exchange Rate Indicator (NEW) -->
-        <div style="display: inline-flex; align-items: center; padding: 4px 12px; background: rgba(10,14,18,0.5); border-radius: 4px; border: 1px solid rgba(255,215,0,0.2); margin-left: 10px;">
-          <div id="exchange-rate-indicator" style="width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background-color: #777;"></div>
-          <span id="exchange-rate-text" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); font-size: 0.9rem;">Atualizando taxa de câmbio...</span>
-        </div>
       </div>
       
       <!-- Authentication Section (NEW) -->
@@ -380,13 +361,6 @@
             <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
               <img src="./images/steam.png" alt="Steam" style="height: 20px; width: 20px; display: block; margin-right: 10px;">
               <span style="display: block;">LOGIN COM STEAM</span>
-            </div>
-          </button>
-          
-          <!-- Botão de teste para URL de retorno -->
-          <button id="test-redirect-btn" class="btn" style="display: none; padding: 10px 25px; margin-left: 10px; background: linear-gradient(135deg, #614080 0%, #4a2c6a 100%); color: var(--cs2-text-light); border: none; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; cursor: pointer;">
-            <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-              <span style="display: block;">TESTAR RETORNO</span>
             </div>
           </button>
           
@@ -410,6 +384,7 @@
         <div style="display: flex; border-bottom: 1px solid rgba(255,215,0,0.2); flex-wrap: wrap;">
           <button class="api-tab active" data-tab="inventory" style="font-family: 'Rajdhani', sans-serif; padding: 10px 20px; margin-right: 5px; background: none; border: none; color: var(--cs2-primary-gold); font-size: 1.1rem; font-weight: 600; cursor: pointer; position: relative; letter-spacing: 1px; transition: all 0.3s ease;">INVENTÁRIO</button>
           <button class="api-tab" data-tab="price" style="font-family: 'Rajdhani', sans-serif; padding: 10px 20px; margin-right: 5px; background: none; border: none; color: var(--cs2-text-light); font-size: 1.1rem; font-weight: 600; cursor: pointer; position: relative; letter-spacing: 1px; transition: all 0.3s ease;">PREÇO DE SKIN</button>
+          <button class="api-tab" data-tab="case" style="font-family: 'Rajdhani', sans-serif; padding: 10px 20px; margin-right: 5px; background: none; border: none; color: var(--cs2-text-light); font-size: 1.1rem; font-weight: 600; cursor: pointer; position: relative; letter-spacing: 1px; transition: all 0.3s ease;">CAIXAS</button>
         </div>
         
         <!-- Tab Content -->
@@ -420,67 +395,55 @@
           
           <!-- Tab 1: Inventário -->
           <div class="tab-content active" id="inventory-tab">
-            <div>
-              <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1.5rem; font-size: 1.6rem; text-transform: uppercase; text-align: center;">Análise de Inventário</h3>
-              <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); margin-bottom: 1.5rem; line-height: 1.6; text-align: center;">Conecte sua conta Steam para obter uma análise completa do seu inventário de CS2, incluindo o valor total, itens mais valiosos e estatísticas detalhadas.</p>
-              
-              <div id="auth-section-container" style="display: none; flex-direction: column; align-items: center; justify-content: center; margin: 2rem 0;">
-                <!-- Autenticação Steam - Versão destaque -->
-                <div id="auth-section-highlight" style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, rgba(26,38,52,0.8) 0%, rgba(10,14,18,0.9) 100%); border-radius: 8px; padding: 30px; border: 1px solid rgba(255,215,0,0.3); max-width: 600px; width: 100%;">
-                  <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1rem; font-size: 1.6rem; text-transform: uppercase;">Autenticação Steam</h3>
-                  <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); margin-bottom: 1.5rem; line-height: 1.6;">Conecte com sua conta Steam para acessar recursos avançados, incluindo análise completa do inventário com acesso às Unidades de Armazenamento.</p>
-                  
-                  <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 1rem;">
-                    <button id="login-btn" class="btn" style="display: inline-flex; padding: 12px 30px; background: linear-gradient(135deg, #2f526f 0%, #1c2838 100%); color: var(--cs2-text-light); border: none; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; cursor: pointer;">
-                      <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                        <img src="./images/steam.png" alt="Steam" style="height: 20px; width: 20px; display: block; margin-right: 10px;">
-                        <span style="display: block;">LOGIN COM STEAM</span>
-                      </div>
-                    </button>
-                    
-                    <button id="logout-btn" class="btn" style="display: none; padding: 12px 30px; background: rgba(221,51,51,0.2); color: var(--cs2-danger-red); border: 1px solid var(--cs2-danger-red); border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; cursor: pointer;">
-                      Desconectar
-                    </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+              <div>
+                <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1.5rem; font-size: 1.6rem; text-transform: uppercase;">Análise de Inventário</h3>
+                <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); margin-bottom: 1.5rem; line-height: 1.6;">Insira seu ID da Steam para obter uma análise completa do seu inventário de CS2, incluindo o valor total, itens mais valiosos e estatísticas detalhadas.</p>
+                
+                <div style="margin-bottom: 1.5rem;">
+                  <label for="steam-id" style="display: block; font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); margin-bottom: 5px; font-weight: 600;">Steam ID:</label>
+                  <div style="display: flex;">
+                    <input type="text" id="steam-id" placeholder="Ex: 76561198028121350" style="flex: 1; background: rgba(10,14,18,0.7); border: 1px solid rgba(255,215,0,0.3); padding: 10px 15px; color: var(--cs2-text-light); font-family: 'Rajdhani', sans-serif; border-radius: 4px; font-size: 1rem;">
+                    <button id="analyze-btn" class="btn btn-primary" style="margin-left: 10px; text-transform: uppercase; padding: 10px 20px; background: var(--cs2-gradient-gold); color: var(--cs2-bg-dark); border: none; font-family: 'Teko', sans-serif; font-size: 1.2rem; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">Analisar</button>
                   </div>
                   
-                  <div id="user-info" style="display: none; font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); background: rgba(10,14,18,0.5); padding: 12px 20px; border-radius: 4px; display: inline-block; margin-top: 15px; font-size: 1.1rem;"></div>
+                  <!-- Opções de análise -->
+                  <div style="display: flex; margin-top: 10px;">
+                    <input type="checkbox" id="full-analysis" style="margin-right: 10px;">
+                    <label for="full-analysis" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); font-size: 0.9rem;">Análise completa (mais detalhada)</label>
+                  </div>
+                  
+                  <!-- Storage Unit Switch (NEW) -->
+                  <div id="storage-unit-switch" style="display: none; margin-top: 10px; padding: 8px 12px; background: rgba(255,215,0,0.1); border-radius: 4px; align-items: center;">
+                    <input type="checkbox" id="include-storage-units" style="margin-right: 10px;">
+                    <label for="include-storage-units" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-primary-gold); font-size: 0.9rem; font-weight: 600;">Incluir Unidades de Armazenamento</label>
+                    <span style="margin-left: 5px; font-size: 0.8rem; color: var(--cs2-text-light); opacity: 0.7;">(Requer autenticação)</span>
+                  </div>
                 </div>
                 
-                <!-- Botão para analisar próprio inventário (aparece apenas quando logado) -->
-                <div id="my-inventory-btn-container" style="display: none; margin-top: 15px; text-align: center;">
-                  <button id="my-inventory-btn" class="btn btn-primary" style="padding: 15px 40px; background: linear-gradient(135deg, var(--cs2-primary-gold) 0%, var(--cs2-accent-orange) 100%); color: var(--cs2-bg-dark); border: none; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">
-                    Analisar Meu Inventário
-                  </button>
-                  <p style="margin-top: 10px; color: var(--cs2-text-light); font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; opacity: 0.7;">
-                    Análise completa incluindo conteúdo das Unidades de Armazenamento
-                  </p>
+                <div style="margin-top: 1.5rem;">
+                  <p style="font-family: 'Rajdhani', sans-serif; color: rgba(255,255,255,0.6); font-size: 0.9rem; font-style: italic; margin-bottom: 0.5rem;">* Seu perfil Steam precisa estar público para que possamos analisar seu inventário</p>
+                  <p style="font-family: 'Rajdhani', sans-serif; color: rgba(255,255,255,0.6); font-size: 0.9rem; font-style: italic;">* A análise pode levar alguns segundos, dependendo do tamanho do inventário</p>
                 </div>
               </div>
               
-              <div id="inventory-result" style="opacity: 0; display: flex; flex-direction: column; background: rgba(10,14,18,0.5); border-radius: 8px; border: 1px solid rgba(255,215,0,0.2); padding: 20px; transition: opacity 0.5s ease; max-width: 800px; margin: 0 auto;">
-                <div id="inventory-loading" style="display: none; text-align: center; padding: 2rem;">
-                  <div style="border: 4px solid rgba(255,215,0,0.1); border-left: 4px solid var(--cs2-primary-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
-                  <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light);">Analisando inventário...</p>
-                </div>
-                
-                <div id="inventory-data" style="display: none; height: 100%;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 10px;">
-                    <h4 style="font-family: 'Orbitron', sans-serif; color: var(--cs2-primary-gold); margin: 0; font-size: 1.2rem;">Análise de Inventário</h4>
-                    <span id="inventory-total-value" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-accent-orange); font-weight: 700; font-size: 1.3rem;">R$ 0,00</span>
+              <div>
+                <div id="inventory-result" style="opacity: 0; height: 100%; display: flex; flex-direction: column; background: rgba(10,14,18,0.5); border-radius: 8px; border: 1px solid rgba(255,215,0,0.2); padding: 20px; transition: opacity 0.5s ease;">
+                  <div id="inventory-loading" style="display: none; text-align: center; padding: 2rem;">
+                    <div style="border: 4px solid rgba(255,215,0,0.1); border-left: 4px solid var(--cs2-primary-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                    <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light);">Analisando inventário...</p>
                   </div>
                   
-                  <div id="export-button-container" style="text-align: right; margin-bottom: 15px;">
-                    <button id="export-excel-btn" class="btn" style="padding: 6px 12px; background: linear-gradient(to right, #4B9E2A, #2f7c1e); color: white; border: none; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center;">
-                      <span style="margin-right: 5px;">📊</span> Exportar para Excel
-                    </button>
-                    <button id="generate-dashboard-btn" class="btn" style="margin-left: 10px; padding: 6px 12px; background: linear-gradient(to right, #2389DA, #1a6ca8); color: white; border: none; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center;">
-                      <span style="margin-right: 5px;">📈</span> Dashboard Interativa
-                    </button>
-                  </div>
-                  
-                  <div style="overflow-y: auto; flex: 1; padding-right: 10px;">
-                    <div id="inventory-summary"></div>
-                    <div id="inventory-items" style="margin-top: 1rem; max-height: 350px; overflow-y: auto; padding-right: 10px;"></div>
+                  <div id="inventory-data" style="display: none; height: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 10px;">
+                      <h4 style="font-family: 'Orbitron', sans-serif; color: var(--cs2-primary-gold); margin: 0; font-size: 1.2rem;">Análise de Inventário</h4>
+                      <span id="inventory-total-value" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-accent-orange); font-weight: 700; font-size: 1.3rem;">R$ 0,00</span>
+                    </div>
+                    
+                    <div style="overflow-y: auto; flex: 1; padding-right: 10px;">
+                      <div id="inventory-summary"></div>
+                      <div id="inventory-items" style="margin-top: 1rem;"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -489,7 +452,6 @@
           
           <!-- Tab 2: Preço de Skin -->
           <div class="tab-content" id="price-tab" style="display: none;">
-            <!-- Conteúdo tab preço permanece igual -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
               <div>
                 <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1.5rem; font-size: 1.6rem; text-transform: uppercase;">Preço de Skin</h3>
@@ -527,7 +489,43 @@
             </div>
           </div>
           
-
+          <!-- Tab 3: Caixas -->
+          <div class="tab-content" id="case-tab" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+              <div>
+                <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1.5rem; font-size: 1.6rem; text-transform: uppercase;">Caixas e Conteúdos</h3>
+                <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); margin-bottom: 1.5rem; line-height: 1.6;">Explore as caixas disponíveis no CS2 e seus conteúdos. Selecione uma caixa para ver as skins que podem ser obtidas e suas probabilidades.</p>
+                
+                <div style="margin-bottom: 1.5rem;">
+                  <label for="case-select" style="display: block; font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); margin-bottom: 5px; font-weight: 600;">Selecione uma Caixa:</label>
+                  <div style="display: flex;">
+                    <select id="case-select" style="flex: 1; background: rgba(10,14,18,0.7); border: 1px solid rgba(255,215,0,0.3); padding: 10px 15px; color: var(--cs2-text-light); font-family: 'Rajdhani', sans-serif; border-radius: 4px; font-size: 1rem;">
+                      <option value="">Carregando caixas...</option>
+                    </select>
+                    <button id="case-btn" class="btn btn-primary" style="margin-left: 10px; text-transform: uppercase; padding: 10px 20px; background: var(--cs2-gradient-gold); color: var(--cs2-bg-dark); border: none; font-family: 'Teko', sans-serif; font-size: 1.2rem; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">Ver Itens</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <div id="case-result" style="opacity: 0; height: 100%; display: flex; flex-direction: column; background: rgba(10,14,18,0.5); border-radius: 8px; border: 1px solid rgba(255,215,0,0.2); padding: 20px; transition: opacity 0.5s ease;">
+                  <div id="case-loading" style="display: none; text-align: center; padding: 2rem;">
+                    <div style="border: 4px solid rgba(255,215,0,0.1); border-left: 4px solid var(--cs2-primary-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                    <p style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light);">Carregando informações da caixa...</p>
+                  </div>
+                  
+                  <div id="case-data" style="display: none; height: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 10px;">
+                      <h4 style="font-family: 'Orbitron', sans-serif; color: var(--cs2-primary-gold); margin: 0; font-size: 1.2rem;">Conteúdo da Caixa</h4>
+                      <span id="case-price" style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-accent-orange); font-weight: 700; font-size: 1.3rem;"></span>
+                    </div>
+                    
+                    <div id="case-items" style="overflow-y: auto; max-height: 300px; padding-right: 10px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -718,26 +716,11 @@
     
     // API Interface Scripts
     document.addEventListener('DOMContentLoaded', function() {
-      // Detecta ambiente: localhost ou produção
-      const isLocalhost = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1';
-      
-      // Forçar o uso da API do Render para testes
-      const forceProduction = true; // Defina como false para voltar ao comportamento normal
-      
-      // Base URL da API - Será diferente dependendo do ambiente
-      const API_BASE_URL = (forceProduction || !isLocalhost) 
-                         ? 'https://cotacaocs2-production-56f0.up.railway.app'  // Ambiente de produção no Railway
-                         : 'http://localhost:8000';  // Ambiente de desenvolvimento
-      
-      console.log(`Ambiente detectado: ${isLocalhost ? 'Desenvolvimento local' : 'Produção'}`);
-      console.log(`Usando API: ${API_BASE_URL} (Forçar produção: ${forceProduction})`);
+      // Base URL da API - Agora usando Uvicorn via localhost
+      const API_BASE_URL = 'https://cotacao-cs2.onrender.com';
       
       // Auth token para armazenar após login
       let authToken = localStorage.getItem('steamAuthToken');
-      
-      // Variável para armazenar os dados do inventário para exportação
-      let lastInventoryData = null;
       
       // Elementos da página
       const apiStatusIndicator = document.getElementById('api-status-indicator');
@@ -746,13 +729,15 @@
       const tabContents = document.querySelectorAll('.tab-content');
       
       // Elementos da tab Inventário
+      const steamIdInput = document.getElementById('steam-id');
+      const fullAnalysisCheckbox = document.getElementById('full-analysis');
+      const analyzeBtn = document.getElementById('analyze-btn');
       const inventoryResult = document.getElementById('inventory-result');
       const inventoryLoading = document.getElementById('inventory-loading');
       const inventoryData = document.getElementById('inventory-data');
       const inventoryTotalValue = document.getElementById('inventory-total-value');
       const inventorySummary = document.getElementById('inventory-summary');
       const inventoryItems = document.getElementById('inventory-items');
-      const exportExcelBtn = document.getElementById('export-excel-btn');
       
       // Elementos da tab Preço
       const skinNameInput = document.getElementById('skin-name');
@@ -762,300 +747,40 @@
       const priceData = document.getElementById('price-data');
       const priceInfo = document.getElementById('price-info');
       
+      // Elementos da tab Caixas
+      const caseSelect = document.getElementById('case-select');
+      const caseBtn = document.getElementById('case-btn');
+      const caseResult = document.getElementById('case-result');
+      const caseLoading = document.getElementById('case-loading');
+      const caseData = document.getElementById('case-data');
+      const casePrice = document.getElementById('case-price');
+      const caseItems = document.getElementById('case-items');
 
-      
       // Elementos da autenticação (adicionados)
       const authSection = document.getElementById('auth-section');
       const loginBtn = document.getElementById('login-btn');
       const logoutBtn = document.getElementById('logout-btn');
       const userInfo = document.getElementById('user-info');
-      
-      // Função auxiliar para fazer requisições com headers personalizados
-      async function fetchWithHeaders(endpoint, options = {}) {
-          const defaultOptions = {
-              method: 'GET',
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  'Cache-Control': 'no-cache, no-store, must-revalidate',
-                  'Pragma': 'no-cache',
-                  'Expires': '0'
-              },
-              credentials: 'same-origin',
-              cache: 'no-cache',
-              mode: 'cors' // Sempre usar modo CORS para todas as requisições
-          };
-
-          // Mesclar opções padrão com as fornecidas
-          const mergedOptions = {
-              ...defaultOptions,
-              ...options,
-              headers: {
-                  ...defaultOptions.headers,
-                  ...(options.headers || {})
-              }
-          };
-
-          // Fazer a requisição
-          const response = await fetch(endpoint, mergedOptions);
-          console.log(`Status da resposta: ${response.status}`);
-
-          // Se a resposta não for 2xx, lançar erro
-          if (!response.ok) {
-              // Tentar obter detalhes do erro da resposta
-              let errorMessage;
-              try {
-                  const errorData = await response.json();
-                  errorMessage = errorData.error || errorData.detail || errorData.message || `Erro ${response.status}`;
-              } catch (e) {
-                  errorMessage = `Erro ${response.status}: ${response.statusText}`;
-              }
-              
-              throw new Error(errorMessage);
-          }
-
-          // Verificar se a resposta está vazia
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
-              return await response.json();
-          } else {
-              return await response.text();
-          }
-      }
+      const storageUnitSwitch = document.getElementById('storage-unit-switch');
       
       // Verificar status da API
       function checkApiStatus() {
-        const statusEndpoint = `${API_BASE_URL}/api/status`;
-        console.log('Verificando status da API em:', statusEndpoint);
-        
-        // Ativar indicador visual de verificação
-        if (apiStatusIndicator) {
-          apiStatusIndicator.style.backgroundColor = '#777';
-          apiStatusText.textContent = 'Verificando API...';
-        }
-        
-        // Variável para controlar se já tivemos resposta
-        let hasResponded = false;
-        
-        // Usar um timeout para limitar o tempo de espera
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => {
-            if (!hasResponded) {
-              console.log('Timeout atingido, mas continuaremos esperando a resposta em background');
-              reject(new Error('Timeout ao verificar API'));
+        fetch(`${API_BASE_URL}/api/status`)
+          .then(response => {
+            if (response.ok) {
+              apiStatusIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
+              apiStatusText.textContent = 'API online';
+              loadCases(); // Carrega a lista de caixas se a API estiver online
+              return response.json();
+            } else {
+              throw new Error('API offline');
             }
-          }, 20000); // Aumentado para 20 segundos para evitar timeouts prematuros
-        });
-        
-        // SOLUÇÃO MELHORADA: Use fetch com modo no-cors para apenas verificar se a API está online
-        fetch(`${API_BASE_URL}/api/status?_=${Date.now()}`, {
-          method: 'GET',
-          mode: 'no-cors', // Isso permite a verificação sem erros CORS, mas não permite ler a resposta
-          cache: 'no-cache',
-          credentials: 'omit',
-          timeout: 15000 // 15 segundos de timeout
-        })
-        .then(response => {
-          hasResponded = true;
-          console.log('API respondeu com sucesso');
-          apiStatusIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
-          apiStatusText.textContent = 'API online | DB: Conectado';
-          
-          // Remover botão de retry se existir
-          const retryButton = document.getElementById('api-status-retry-btn');
-          if (retryButton && retryButton.parentNode) {
-            retryButton.parentNode.removeChild(retryButton);
-          }
-          
-          loadCases(); // Carrega a lista de caixas se a API estiver online
-        })
-        .catch(error => {
-          // Tentar método alternativo se fetch falhar
-          checkApiStatusFallback();
-        });
-        
-        // Iniciar o timeout, mas não bloquear outras operações
-        timeoutPromise.catch(error => {
-          // Apenas mostramos o erro de timeout se ainda não tivermos uma resposta
-          if (!hasResponded) {
-            console.error('Erro ao verificar status da API:', error.message);
+          })
+          .catch(error => {
             apiStatusIndicator.style.backgroundColor = 'var(--cs2-danger-red)';
-            apiStatusText.textContent = `API offline (Timeout)`;
-            
-            addRetryButton();
-          }
-        });
-      }
-      
-      // Método de fallback para verificar API status usando script
-      function checkApiStatusFallback() {
-        console.log('Tentando método alternativo para verificar status da API');
-        
-        // Criar um elemento de script para JSONP
-        const script = document.createElement('script');
-        const callbackName = 'apiStatusCallback_' + Date.now();
-        const timestamp = Date.now();
-        
-        // Definir uma função global temporária para callback
-        window[callbackName] = function(data) {
-          console.log('API respondeu com sucesso (via JSONP)');
-          apiStatusIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
-          apiStatusText.textContent = 'API online | DB: Conectado';
-          
-          // Remover botão de retry se existir
-          const retryButton = document.getElementById('api-status-retry-btn');
-          if (retryButton && retryButton.parentNode) {
-            retryButton.parentNode.removeChild(retryButton);
-          }
-          
-          loadCases(); // Carrega a lista de caixas se a API estiver online
-          
-          // Limpar a função global
-          delete window[callbackName];
-          
-          // Remover o script
-          if (script.parentNode) {
-            script.parentNode.removeChild(script);
-          }
-        };
-        
-        // Configurar timeout local para o script
-        const scriptTimeout = setTimeout(() => {
-          console.error('Erro ao verificar status da API via JSONP: Timeout');
-          // Remover a função global
-          delete window[callbackName];
-          
-          // Tentar terceiro método de fallback usando iframe
-          checkApiStatusFallbackIframe();
-        }, 10000);
-        
-        // Quando o script falhar
-        script.onerror = function() {
-          clearTimeout(scriptTimeout);
-          console.error('Erro ao verificar status da API via JSONP: Falha no script');
-          
-          // Remover a função global
-          delete window[callbackName];
-          
-          // Tentar terceiro método de fallback usando iframe
-          checkApiStatusFallbackIframe();
-        };
-        
-        // Configurar URL do script
-        script.src = `${API_BASE_URL}/api/status?callback=${callbackName}&_=${timestamp}`;
-        
-        // Adicionar o script ao documento
-        document.head.appendChild(script);
-      }
-      
-      // Método de fallback usando iframe (final)
-      function checkApiStatusFallbackIframe() {
-        console.log('Tentando método final para verificar status da API (iframe)');
-        
-        // Criar um iframe invisível
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.id = 'api-status-iframe';
-        
-        // Definir timeout
-        const iframeTimeout = setTimeout(() => {
-          console.error('Erro ao verificar status da API via iframe: Timeout');
-          apiStatusIndicator.style.backgroundColor = 'var(--cs2-danger-red)';
-          apiStatusText.textContent = 'API offline';
-          
-          // Remover iframe
-          if (iframe.parentNode) {
-            document.body.removeChild(iframe);
-          }
-          
-          // Adicionar botão de retry
-          addRetryButton();
-          
-          // Inicializar de qualquer forma para permitir uso offline
-          loadDefaultData();
-        }, 10000);
-        
-        // Evento de carga
-        iframe.onload = function() {
-          clearTimeout(iframeTimeout);
-          console.log('API respondeu com sucesso (via iframe)');
-          apiStatusIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
-          apiStatusText.textContent = 'API online | DB: Conectado';
-          
-          // Remover botão de retry se existir
-          const retryButton = document.getElementById('api-status-retry-btn');
-          if (retryButton && retryButton.parentNode) {
-            retryButton.parentNode.removeChild(retryButton);
-          }
-          
-          // Remover iframe
-          document.body.removeChild(iframe);
-          
-          loadCases(); // Carrega a lista de caixas se a API estiver online
-        };
-        
-        // Evento de erro
-        iframe.onerror = function() {
-          clearTimeout(iframeTimeout);
-          console.error('Erro ao verificar status da API via iframe: Falha ao carregar');
-          apiStatusIndicator.style.backgroundColor = 'var(--cs2-danger-red)';
-          apiStatusText.textContent = 'API offline';
-          
-          // Remover iframe
-          if (iframe.parentNode) {
-            document.body.removeChild(iframe);
-          }
-          
-          // Adicionar botão de retry
-          addRetryButton();
-          
-          // Inicializar de qualquer forma para permitir uso offline
-          loadDefaultData();
-        };
-        
-        // Configurar URL do iframe
-        iframe.src = `${API_BASE_URL}/api/status?iframe=true&_=${Date.now()}`;
-        
-        // Adicionar iframe ao documento
-        document.body.appendChild(iframe);
-      }
-      
-      // Carregar dados padrão para operação offline
-      function loadDefaultData() {
-        console.log('Carregando dados padrão para operação offline');
-        // A funcionalidade de caixas foi removida
-      }
-      
-      // Função para adicionar botão de retry
-      function addRetryButton() {
-        // Apenas adicionar se não existir
-        if (!document.getElementById('api-status-retry-btn')) {
-          const retryButton = document.createElement('button');
-          retryButton.textContent = 'Reconectar';
-          retryButton.id = 'api-status-retry-btn';
-          retryButton.style.marginLeft = '8px';
-          retryButton.style.padding = '2px 6px';
-          retryButton.style.fontSize = '0.8rem';
-          retryButton.style.backgroundColor = 'rgba(255,255,255,0.1)';
-          retryButton.style.border = '1px solid rgba(255,255,255,0.3)';
-          retryButton.style.borderRadius = '2px';
-          retryButton.style.color = 'var(--cs2-text-light)';
-          retryButton.style.cursor = 'pointer';
-          
-          retryButton.addEventListener('click', () => {
-            apiStatusText.textContent = 'Reconectando...';
-            // Remover o botão ao tentar novamente
-            if (retryButton.parentNode) {
-              retryButton.parentNode.removeChild(retryButton);
-            }
-            // Tentar novamente após 500ms
-            setTimeout(checkApiStatus, 500);
+            apiStatusText.textContent = 'API offline';
+            console.error('Erro ao verificar status da API:', error);
           });
-          
-          if (apiStatusText && apiStatusText.parentNode) {
-            apiStatusText.parentNode.appendChild(retryButton);
-          }
-        }
       }
       
       // Verificar estado de autenticação
@@ -1065,7 +790,7 @@
           if (loginBtn) loginBtn.style.display = 'none';
           if (logoutBtn) logoutBtn.style.display = 'inline-block';
           if (userInfo) userInfo.style.display = 'block';
-          // Não mostrar o storageUnitSwitch aqui - será mostrado apenas quando o usuário estiver analisando seu próprio inventário
+          if (storageUnitSwitch) storageUnitSwitch.style.display = 'flex';
           if (document.getElementById('my-inventory-btn-container')) document.getElementById('my-inventory-btn-container').style.display = 'block';
           
           // Atualizar informações do usuário se disponíveis
@@ -1082,137 +807,14 @@
           if (loginBtn) loginBtn.style.display = 'inline-block';
           if (logoutBtn) logoutBtn.style.display = 'none';
           if (userInfo) userInfo.style.display = 'none';
+          if (storageUnitSwitch) storageUnitSwitch.style.display = 'none';
           if (document.getElementById('my-inventory-btn-container')) document.getElementById('my-inventory-btn-container').style.display = 'none';
         }
       }
       
-      // Adicionar elementos para indicador de redirecionamento
-      const createRedirectIndicator = () => {
-        // Remover se já existir
-        const existingIndicator = document.getElementById('redirect-indicator');
-        if (existingIndicator) {
-          document.body.removeChild(existingIndicator);
-        }
-        
-        // Criar overlay
-        const indicator = document.createElement('div');
-        indicator.id = 'redirect-indicator';
-        indicator.style.position = 'fixed';
-        indicator.style.top = '0';
-        indicator.style.left = '0';
-        indicator.style.width = '100%';
-        indicator.style.height = '100%';
-        indicator.style.backgroundColor = 'rgba(10, 14, 18, 0.85)';
-        indicator.style.display = 'flex';
-        indicator.style.flexDirection = 'column';
-        indicator.style.alignItems = 'center';
-        indicator.style.justifyContent = 'center';
-        indicator.style.zIndex = '9999';
-        
-        // Criar spinner
-        const spinner = document.createElement('div');
-        spinner.style.border = '6px solid rgba(255, 215, 0, 0.1)';
-        spinner.style.borderLeft = '6px solid var(--cs2-primary-gold)';
-        spinner.style.borderRadius = '50%';
-        spinner.style.width = '50px';
-        spinner.style.height = '50px';
-        spinner.style.animation = 'spin 1s linear infinite';
-        
-        // Criar mensagem
-        const message = document.createElement('div');
-        message.textContent = 'Redirecionando para a Steam...';
-        message.style.color = 'var(--cs2-text-light)';
-        message.style.marginTop = '20px';
-        message.style.fontFamily = 'Rajdhani, sans-serif';
-        message.style.fontSize = '1.2rem';
-        
-        // Criar subtexto
-        const subtext = document.createElement('div');
-        subtext.textContent = 'Aguarde enquanto você é redirecionado para autenticação';
-        subtext.style.color = 'rgba(255, 255, 255, 0.6)';
-        subtext.style.marginTop = '10px';
-        subtext.style.fontFamily = 'Rajdhani, sans-serif';
-        subtext.style.fontSize = '0.9rem';
-        
-        // Botão para cancelar
-        const cancelBtn = document.createElement('button');
-        cancelBtn.textContent = 'Cancelar';
-        cancelBtn.style.marginTop = '20px';
-        cancelBtn.style.padding = '8px 16px';
-        cancelBtn.style.backgroundColor = 'rgba(221, 51, 51, 0.2)';
-        cancelBtn.style.border = '1px solid var(--cs2-danger-red)';
-        cancelBtn.style.color = 'var(--cs2-danger-red)';
-        cancelBtn.style.borderRadius = '4px';
-        cancelBtn.style.fontFamily = 'Rajdhani, sans-serif';
-        cancelBtn.style.cursor = 'pointer';
-        
-        cancelBtn.addEventListener('click', () => {
-          document.body.removeChild(indicator);
-          // Resetar o botão de login
-          if (loginBtn) {
-            loginBtn.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 100%;"><img src="./images/steam.png" alt="Steam" style="height: 20px; width: 20px; display: block; margin-right: 10px;"><span style="display: block;">LOGIN COM STEAM</span></div>';
-            loginBtn.disabled = false;
-          }
-        });
-        
-        // Montar elementos
-        indicator.appendChild(spinner);
-        indicator.appendChild(message);
-        indicator.appendChild(subtext);
-        indicator.appendChild(cancelBtn);
-        
-        // Adicionar ao corpo do documento
-        document.body.appendChild(indicator);
-        
-        // Configurar remoção automática após 20 segundos (caso algo dê errado)
-        setTimeout(() => {
-          if (document.body.contains(indicator)) {
-            document.body.removeChild(indicator);
-          }
-        }, 20000);
-        
-        return indicator;
-      };
-      
       // Iniciar login com Steam
       function loginWithSteam() {
-        // Mostrar feedback visual - estamos adicionando um indicador de carregamento
-        if (loginBtn) {
-          loginBtn.innerHTML = '<div style="display: inline-flex; align-items: center; justify-content: center; width: 100%;"><div style="display: inline-block; border: 2px solid rgba(255,255,255,0.3); border-left: 2px solid var(--cs2-primary-gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; margin-right: 8px;"></div> CONECTANDO...</div>';
-          loginBtn.disabled = true;
-        }
-        
-        // Detectar se estamos em ambiente local e enviar o parâmetro para a API
-        const isLocalhost = window.location.hostname === 'localhost' || 
-                             window.location.hostname === '127.0.0.1' ||
-                             window.location.protocol === 'file:';
-        
-        console.log('Informações do ambiente:');
-        console.log('- protocol:', window.location.protocol);
-        console.log('- hostname:', window.location.hostname);
-        console.log('- port:', window.location.port);
-        console.log('- pathname:', window.location.pathname);
-        console.log('- isLocalhost detectado:', isLocalhost);
-        
-        // Construir URL com parâmetro de redirecionamento se for localhost
-        let authUrl = `${API_BASE_URL}/auth/steam`;
-        if (isLocalhost) {
-          // Forçar a URL de retorno para ser sempre http://localhost:5500/api.html
-          const returnUrl = 'http://localhost:5500/api.html';
-          
-          authUrl += `?redirect_local=true&return_url=${encodeURIComponent(returnUrl)}`;
-          console.log('URL de retorno forçada para:', returnUrl);
-        }
-        
-        console.log(`Iniciando login com Steam. URL: ${authUrl}`);
-        
-        // Mostrar indicador visual de redirecionamento
-        createRedirectIndicator();
-        
-        // Timeout de segurança caso a redireção não ocorra
-        setTimeout(() => {
-          window.location.href = authUrl;
-        }, 1000);
+        window.location.href = `${API_BASE_URL}/auth/steam`;
       }
       
       // Logout
@@ -1227,113 +829,42 @@
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
         
-        console.log('Verificando parâmetros de URL após redirecionamento');
-        console.log('- URL completa:', window.location.href);
-        console.log('- Hostname:', window.location.hostname);
-        console.log('- Porto:', window.location.port);
-        console.log('- Parâmetros de URL:', window.location.search);
-        console.log('- Token detectado:', token ? 'Sim' : 'Não');
-        
         if (token) {
-          console.log('- Token obtido, armazenando no localStorage');
-          
-          try {
-            // Verificar se o token é válido (formato JWT)
-            const tokenParts = token.split('.');
-            if (tokenParts.length !== 3) {
-              console.error('Formato de token inválido');
-              alert('O token de autenticação parece ser inválido. Por favor, tente fazer login novamente.');
-              return;
-            }
-            
-            // Decodificar payload para verificar estrutura
-            try {
-              const payload = JSON.parse(atob(tokenParts[1]));
-              console.log('- Payload do token decodificado:', payload);
-              
-              // Verificar se contém informações essenciais
-              if (!payload.steam_id && !payload.exp) {
-                console.warn('Token não contém informações essenciais (steam_id e exp)');
-              }
-              
-              // Verificar se o token está expirado
-              if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
-                console.error('Token expirado');
-                alert('Seu token de autenticação expirou. Por favor, faça login novamente.');
-                return;
-              }
-            } catch (e) {
-              console.warn('Não foi possível decodificar o payload do token, mas continuando mesmo assim', e);
-            }
-            
-            // Armazenar o token
-            localStorage.setItem('steamAuthToken', token);
-            authToken = token;
-            
-            // Resetar botão de login se ainda estiver no estado de loading
-            if (loginBtn) {
-              loginBtn.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 100%;"><img src="./images/steam.png" alt="Steam" style="height: 20px; width: 20px; display: block; margin-right: 10px;"><span style="display: block;">LOGIN COM STEAM</span></div>';
-              loginBtn.disabled = false;
-            }
-            
-            // Atualizar UI para mostrar que o usuário está logado
-            checkAuthStatus();
-            
-            // Verificação de token com a API removida - não necessária
-            
-            // Limpar parâmetros da URL sem recarregar a página
-            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            window.history.replaceState({path: newUrl}, '', newUrl);
-            
-            console.log('- Redirecionamento para autenticação concluído com sucesso');
-          } catch (error) {
-            console.error('Erro ao processar token:', error);
-            localStorage.removeItem('steamAuthToken');
-            authToken = null;
-            checkAuthStatus();
-          }
-        }
-        
-        // Verificar outros parâmetros
-        const errorParam = urlParams.get('error');
-        if (errorParam) {
-          console.error('Erro de autenticação:', errorParam);
-          alert(`Ocorreu um erro durante a autenticação: ${errorParam}`);
+          localStorage.setItem('steamAuthToken', token);
+          authToken = token;
+          checkAuthStatus();
           
           // Limpar parâmetros da URL
-          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-          window.history.replaceState({path: newUrl}, '', newUrl);
+          window.history.replaceState({}, document.title, window.location.pathname);
         }
       }
       
-      // Função para verificar token com a API - removida por ser desnecessária
-      function verifyTokenWithApi(token) {
-        console.log('Verificação de token com API foi desativada');
-        // Função mantida apenas por compatibilidade, mas não faz nada
-        // A verificação de token é feita localmente
+      // Carregar lista de caixas
+      function loadCases() {
+        fetch(`${API_BASE_URL}/cases`)
+          .then(response => response.json())
+          .then(data => {
+            caseSelect.innerHTML = '';
+            
+            // Adicionar opção padrão
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Selecione uma caixa';
+            caseSelect.appendChild(defaultOption);
+            
+            // Adicionar opções de caixas
+            data.forEach(caseName => {
+              const option = document.createElement('option');
+              option.value = caseName;
+              option.textContent = caseName;
+              caseSelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.error('Erro ao carregar caixas:', error);
+            caseSelect.innerHTML = '<option value="">Erro ao carregar caixas</option>';
+          });
       }
-      
-      // Atualizar informações do usuário com dados da Steam
-      function updateUserInfo(steamInfo) {
-        if (!userInfo) return;
-        
-        // Mostrar informações mais amigáveis
-        if (steamInfo.personaname) {
-          userInfo.innerHTML = `
-            <div style="display: flex; align-items: center;">
-              ${steamInfo.avatar ? `<img src="${steamInfo.avatar}" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; margin-right: 10px;">` : ''}
-              <div>
-                <div style="font-weight: 600;">${steamInfo.personaname}</div>
-                <div style="font-size: 0.8rem; opacity: 0.7;">SteamID: ${steamInfo.steamid}</div>
-              </div>
-            </div>
-          `;
-        } else {
-          userInfo.textContent = `SteamID: ${steamInfo.steamid || 'Desconhecido'}`;
-        }
-      }
-      
-
       
       // Formatar valor para BRL
       function formatCurrency(value) {
@@ -1341,87 +872,6 @@
           style: 'currency', 
           currency: 'BRL' 
         }).format(value);
-      }
-      
-      // Função vazia para caixas (mantida para compatibilidade)
-      function loadCases() {
-        console.log('Funcionalidade de caixas foi removida');
-        // Esta função está mantida apenas por compatibilidade
-      }
-      
-      // Função para exportar dados para Excel
-      function exportToExcel(data, filename = 'inventario_elite_skins') {
-        if (!data || !data.items || data.items.length === 0) {
-          alert('Nenhum dado disponível para exportar');
-          return;
-        }
-        
-        console.log('Preparando exportação para Excel...');
-        
-        // Criar uma workbook XLSX
-        const wb = XLSX.utils.book_new();
-        
-        // Preparar os dados para a planilha principal de itens
-        const itemsData = [
-          // Cabeçalho
-          ["Nome", "Hash de Mercado", "Preço (R$)", "Quantidade", "Total (R$)", "Origem", "Categoria", "Desgaste"]
-        ];
-        
-        // Adicionar dados dos itens
-        data.items.forEach(item => {
-          itemsData.push([
-            item.name || '',
-            item.market_hash_name || '',
-            (item.price || 0).toFixed(2).replace('.', ','),
-            item.quantity || 1,
-            (item.total || item.price || 0).toFixed(2).replace('.', ','),
-            item.source === 'storage_unit' ? 'Unidade de Armazenamento' : 'Inventário',
-            item.category || 'Outros',
-            item.exterior || ''
-          ]);
-        });
-        
-        // Criar uma planilha para os itens
-        const wsItems = XLSX.utils.aoa_to_sheet(itemsData);
-        
-        // Adicionar a planilha ao workbook
-        XLSX.utils.book_append_sheet(wb, wsItems, "Itens");
-        
-        // Criar uma planilha para o resumo
-        const summaryData = [
-          ["Resumo do Inventário", ""],
-          ["Total de Itens", data.total_items || 0],
-          ["Valor Total (R$)", (data.total_value || 0).toFixed(2).replace('.', ',')],
-          ["Valor Médio por Item (R$)", (data.average_item_value || 0).toFixed(2).replace('.', ',')]
-        ];
-        
-        // Adicionar informações de fonte se disponível
-        if (data.source_summary) {
-          summaryData.push(["", ""]);
-          summaryData.push(["Resumo por Origem", ""]);
-          summaryData.push(["Itens de Unidades", data.source_summary.storage_units?.count || 0]);
-          summaryData.push(["Valor em Unidades (R$)", (data.source_summary.storage_units?.value || 0).toFixed(2).replace('.', ',')]);
-          summaryData.push(["Itens de Inventário", data.source_summary.market?.count || 0]);
-          summaryData.push(["Valor em Inventário (R$)", (data.source_summary.market?.value || 0).toFixed(2).replace('.', ',')]);
-        }
-        
-        // Adicionar data e hora da exportação
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('pt-BR');
-        const timeStr = now.toLocaleTimeString('pt-BR');
-        summaryData.push(["", ""]);
-        summaryData.push([`Exportado em: ${dateStr} às ${timeStr} | Elite Skins 2025`, ""]);
-        
-        // Criar uma planilha para o resumo
-        const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
-        
-        // Adicionar a planilha de resumo ao workbook
-        XLSX.utils.book_append_sheet(wb, wsSummary, "Resumo");
-        
-        // Gerar o arquivo XLSX e acionar o download
-        XLSX.writeFile(wb, `${filename}_${dateStr.replace(/\//g, '-')}.xlsx`);
-        
-        console.log('Exportação para Excel concluída');
       }
       
       // Alternância de tabs
@@ -1450,23 +900,11 @@
       
       // Criar cartão de item
       function createItemCard(item) {
-        // Adicionar badge de filtragem se aplicável
-        const filteredBadge = item.filtered ? 
-          `<span style="font-size: 0.7rem; background: rgba(75,158,42,0.2); color: var(--cs2-accent-green); display: inline-block; padding: 1px 4px; border-radius: 3px; margin-left: 5px;">ajustado</span>` : '';
-        
-        // Badge para indicar múltiplas fontes de preço
-        const sourcesBadge = item.price_sources_count ? 
-          `<span style="font-size: 0.7rem; background: rgba(35,137,218,0.2); color: var(--cs2-info-blue); display: inline-block; padding: 1px 4px; border-radius: 3px; margin-left: 5px;">${item.price_sources_count} fontes</span>` : '';
-        
         return `
           <div style="display: flex; align-items: center; margin-bottom: 15px; padding: 10px; background: rgba(19,30,43,0.5); border-radius: 6px; border-left: 3px solid ${getRarityColor(item.rarity)};">
             <div style="flex: 1;">
-              <div style="font-weight: 600; color: ${getRarityColor(item.rarity)};">
-                ${item.name}
-                ${filteredBadge}
-                ${sourcesBadge}
-              </div>
-              <div style="font-size: 0.9rem; opacity: 0.7;">${item.type || ''} | ${item.exterior || ''}</div>
+              <div style="font-weight: 600; color: ${getRarityColor(item.rarity)};">${item.name}</div>
+              <div style="font-size: 0.9rem; opacity: 0.7;">${item.type || ''} | ${item.wear || ''}</div>
               ${item.source ? `<div style="font-size: 0.8rem; background: rgba(255,215,0,0.1); display: inline-block; padding: 2px 6px; border-radius: 3px; margin-top: 4px;">${item.source === 'storage_unit' ? 'Unidade de Armazenamento' : 'Inventário'}</div>` : ''}
             </div>
             <div style="font-weight: 700; color: var(--cs2-accent-orange);">${formatCurrency(item.price || 0)}</div>
@@ -1509,666 +947,50 @@
         return rarityColors[rarity] || 'var(--cs2-primary-gold)';
       }
       
-      // Analisar inventário (para o botão da interface) - Função mantida para compatibilidade
-      function analyzeInventory() {
-        // Exibir mensagem para o usuário
-        inventoryResult.style.opacity = '1';
-        inventoryLoading.style.display = 'none';
-        inventoryData.style.display = 'block';
-        
-        // Exibir mensagem explicativa
-        inventorySummary.innerHTML = `
-          <div style="text-align: center; padding: 20px; background: rgba(19,30,43,0.7); border-radius: 8px; border-left: 3px solid var(--cs2-primary-gold);">
-            <p style="font-size: 1.1rem; margin-bottom: 10px; color: var(--cs2-primary-gold);">
-              <strong>Funcionalidade Atualizada</strong>
-            </p>
-            <p style="color: var(--cs2-text-light); margin-bottom: 15px;">
-              A análise de inventário de terceiros foi descontinuada. 
-              Para verificar um inventário, faça login com sua conta Steam.
-            </p>
-            <button id="redirect-login-btn" class="btn" style="padding: 8px 20px; background: linear-gradient(135deg, #2f526f 0%, #1c2838 100%); color: var(--cs2-text-light); border: none; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 1rem; cursor: pointer;">
-              <img src="./images/steam.png" alt="Steam" style="height: 16px; width: 16px; display: inline-block; vertical-align: middle; margin-right: 8px;">
-              Login com Steam
-            </button>
-          </div>
-        `;
-        
-        inventoryItems.innerHTML = '';
-        
-        // Adicionar event listener para o botão de redirecionamento
-        setTimeout(() => {
-          const redirectBtn = document.getElementById('redirect-login-btn');
-          if (redirectBtn) {
-            redirectBtn.addEventListener('click', loginWithSteam);
-          }
-        }, 100);
-      }
-      
-      // Função auxiliar para criar URL com proxy CORS
-      function createCorsProxyUrl(originalUrl) {
-        const corsProxyUrl = 'https://corsproxy.io/?';
-        return `${corsProxyUrl}${encodeURIComponent(originalUrl)}`;
-      }
-      
-      // Função para formatar moeda original baseada na moeda
-      function formatOriginalCurrency(price, currency) {
-        if (!price) return '0.00';
-        price = parseFloat(price);
-        
-        const symbols = {
-          'USD': '$',
-          'EUR': '€',
-          'GBP': '£',
-          'BRL': 'R$'
-        };
-        
-        const symbol = symbols[currency] || '$';
-        return `${symbol}${price.toFixed(2)}`;
-      }
-      
-      // Buscar preço com método de fallback
-      async function getPrice() {
-        const skinName = skinNameInput.value.trim();
-        if (!skinName) {
-          alert('Por favor, informe o nome da skin.');
-          return;
-        }
-        
-        priceResult.style.opacity = '1';
-        priceLoading.style.display = 'block';
-        priceData.style.display = 'none';
-        
-        console.log('Buscando preço para:', skinName);
-        
-        try {
-          // Garantir que temos a taxa de câmbio atualizada
-          await getExchangeRate();
+      // Analisar inventário
+      if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', () => {
+          const steamId = steamIdInput.value.trim();
           
-          // Correção: Usar parâmetro de caminho em vez de parâmetro de consulta
-          const endpoint = `${API_BASE_URL}/price/${encodeURIComponent(skinName)}`;
-          console.log('Fazendo requisição para:', endpoint);
-          
-          // Tentar fazer a requisição para a API
-          const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-cache'
-            },
-            mode: 'cors',
-            cache: 'no-cache'
-          });
-          
-          // Verificar se a resposta foi bem-sucedida
-          if (!response || !response.ok) {
-            throw new Error('Erro ao consultar a API: ' + (response ? `Status ${response.status}` : 'Conexão falhou'));
+          if (!steamId) {
+            alert('Por favor, insira um Steam ID válido');
+            return;
           }
           
-          let data;
-          let pricesData = null;
-          let filteredPrice = null;
-          let hasMultiplePrices = false;
+          // Exibir loading
+          inventoryResult.style.opacity = '1';
+          inventoryLoading.style.display = 'block';
+          inventoryData.style.display = 'none';
           
-          // Processar os dados da API
-          data = await response.json();
-          console.log('Preço obtido da API:', data);
+          // Define endpoint baseado na seleção de análise completa e autenticação
+          let endpoint;
+          const headers = {};
+          const useStorageUnits = storageUnitSwitch && storageUnitSwitch.querySelector('input').checked;
           
-          // Verificar se o preço existe nos dados retornados
-          if (!data || !data.price) {
-            throw new Error('API não retornou um preço válido');
-          }
-          
-          // Armazenar informações da moeda original
-          data.original_price = data.price;
-          data.original_currency = data.currency || "USD";
-          
-          // Verificar se temos múltiplos preços para filtrar outliers
-          if (data.prices && Array.isArray(data.prices) && data.prices.length > 0) {
-            hasMultiplePrices = true;
-            pricesData = data.prices;
-            
-            // Converter para valores numéricos
-            const priceValues = data.prices.map(p => p.price || 0);
-            
-            // Aplicar o filtro de outliers
-            filteredPrice = filterOutliersAndCalculateAverage(priceValues);
-            console.log('Preço filtrado calculado:', filteredPrice);
-            
-            // Atualizar o preço com o valor filtrado
-            data.price = filteredPrice.toFixed(2);
-            data.filtered = true;
-          }
-          
-          // Converter preço para BRL se a moeda original não for BRL
-          if (data.original_currency !== 'BRL') {
-            data.price_brl = (parseFloat(data.price) * CURRENCY_RATES.USD_to_BRL * STEAM_TAX_FACTOR).toFixed(2);
+          if (authToken && useStorageUnits) {
+            // Se estiver autenticado e quiser incluir unidades de armazenamento
+            endpoint = `${API_BASE_URL}/my/inventory/complete`;
+            headers['Authorization'] = `Bearer ${authToken}`;
+          } else if (fullAnalysisCheckbox.checked) {
+            // Análise completa (categorizada)
+            endpoint = `${API_BASE_URL}/inventory/full/${steamId}`;
           } else {
-            data.price_brl = data.price;
+            // Análise básica
+            endpoint = `${API_BASE_URL}/inventory/${steamId}`;
           }
           
-          // Converter também os preços individuais se existirem
-          if (pricesData) {
-            pricesData = pricesData.map(p => {
-              if (p.price) {
-                p.original_price_usd = p.price;
-                if (data.original_currency !== 'BRL') {
-                  p.price = (parseFloat(p.price) * CURRENCY_RATES.USD_to_BRL * STEAM_TAX_FACTOR).toFixed(2);
-                }
-              }
-              return p;
-            });
-          }
-          
-          // Mostrar resultado
-          let priceInfoHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem;">
-              <span>Nome da Skin:</span>
-              <span style="font-weight: 600; color: var(--cs2-primary-gold);">${data.market_hash_name || skinName}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem;">
-              <span>Preço Original (${data.original_currency}):</span>
-              <span style="font-weight: 600; color: var(--cs2-info-blue);">${formatOriginalCurrency(data.original_price, data.original_currency)}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem;">
-              <span>Preço em BRL:</span>
-              <span style="font-weight: 700; color: var(--cs2-accent-orange); font-size: 1.3rem;">${formatCurrency(parseFloat(data.price_brl))}</span>
-            </div>`;
-          
-          // Adicionar informações sobre filtragem se aplicável
-          if (hasMultiplePrices && pricesData) {
-            priceInfoHTML += `
-              <div style="margin-top: 15px; padding: 10px; background: rgba(26,38,52,0.5); border-radius: 6px; border: 1px solid rgba(255,215,0,0.2);">
-                <h4 style="font-family: 'Rajdhani', sans-serif; color: var(--cs2-primary-gold); margin-bottom: 10px; font-size: 1rem; display: flex; align-items: center;">
-                  <span style="display: inline-block; width: 6px; height: 6px; background: var(--cs2-accent-green); border-radius: 50%; margin-right: 5px;"></span>
-                  Análise de Preços (${pricesData.length} fontes)
-                </h4>
-                <div style="max-height: 200px; overflow-y: auto; padding-right: 10px;">`;
-                
-            // Ordenar preços do menor para o maior
-            pricesData.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-            
-            // Calcular a mediana para identificar outliers visualmente
-            const priceValues = pricesData.map(p => parseFloat(p.price));
-            const median = priceValues.length % 2 === 0
-              ? (priceValues[priceValues.length / 2 - 1] + priceValues[priceValues.length / 2]) / 2
-              : priceValues[Math.floor(priceValues.length / 2)];
-            
-            // Definir limite percentual para destacar outliers (40%)
-            const percentLimit = 0.4;
-            const upperVisualLimit = median * (1 + percentLimit);
-            const lowerVisualLimit = median * (1 - percentLimit);
-            
-            // Adicionar cada preço com indicador de outlier
-            pricesData.forEach((priceItem, index) => {
-              const priceValue = parseFloat(priceItem.price);
-              const isOutlier = priceValue < lowerVisualLimit || priceValue > upperVisualLimit;
-              
-              priceInfoHTML += `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; padding: 5px; border-radius: 4px; ${isOutlier ? 'background: rgba(221,51,51,0.1);' : ''}">
-                  <span style="color: ${isOutlier ? 'var(--cs2-danger-red)' : 'var(--cs2-text-light)'}; font-size: 0.9rem;">
-                    ${priceItem.source || `Fonte ${index + 1}`}
-                    ${isOutlier ? ' <span style="color: var(--cs2-danger-red); font-size: 0.8rem;">(outlier)</span>' : ''}
-                  </span>
-                  <span style="font-weight: 600; color: ${isOutlier ? 'var(--cs2-danger-red)' : 'var(--cs2-accent-orange)'}; font-size: 0.9rem;">
-                    ${formatCurrency(priceValue)}
-                  </span>
-                </div>`;
-            });
-            
-            priceInfoHTML += `</div></div>`;
-          }
-          
-          // Adicionar informações sobre taxas e origem
-          priceInfoHTML += `
-            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Rajdhani', sans-serif; color: var(--cs2-text-light); font-size: 0.9rem; text-align: center;">
-              <p>Preço ${data.filtered ? 'médio ajustado' : 'obtido'} do Mercado Steam com conversão para BRL.</p>
-              <p style="margin-top: 5px; font-size: 0.8rem; opacity: 0.7;">Taxa de conversão atual: 1 USD = ${CURRENCY_RATES.USD_to_BRL.toFixed(2)} BRL</p>
-              <p style="margin-top: 5px; font-size: 0.8rem; opacity: 0.7;">Última atualização: ${new Date().toLocaleString('pt-BR')}</p>
-            </div>
-          `;
-          
-          // Atualizar o elemento com as informações
-          priceInfo.innerHTML = priceInfoHTML;
-          
-          // Esconder loading e mostrar dados
-          priceLoading.style.display = 'none';
-          priceData.style.display = 'block';
-          
-        } catch (error) {
-          console.error('Erro ao buscar preço:', error);
-          
-          // Exibir mensagem de erro sem simulação de preço
-          priceInfo.innerHTML = `
-            <div style="text-align: center; padding: 20px; background: rgba(221,51,51,0.1); border-radius: 6px;">
-              <p style="color: var(--cs2-danger-red); font-weight: 600; font-size: 1.2rem; margin-bottom: 10px;">Preço não disponível</p>
-              <p style="color: var(--cs2-text-light);">Não foi possível obter o preço atual desta skin no mercado Steam.</p>
-              <p style="color: var(--cs2-text-light); margin-top: 10px; font-size: 0.9rem;">${error.message || 'Erro de conexão com o mercado Steam'}</p>
-              <div style="margin-top: 15px;">
-                <a href="https://steamcommunity.com/market/search?q=${encodeURIComponent(skinName)}" target="_blank" style="color: var(--cs2-info-blue); text-decoration: underline;">Verificar diretamente no mercado Steam</a>
-              </div>
-            </div>
-          `;
-          
-          // Esconder loading e mostrar dados
-          priceLoading.style.display = 'none';
-          priceData.style.display = 'block';
-        }
-      }
-      
-      // Função de fallback para simular preços (usado quando a API não está disponível)
-      function simulatePriceFallback(skinName) {
-        // Fontes comuns de preços de CS2 para simulação
-        const sourcesNames = [
-          "Steam Market", 
-          "Steam Community", 
-          "CS.Money", 
-          "SkinBaron", 
-          "SkinPort", 
-          "Buff163", 
-          "BitSkins", 
-          "DMarket", 
-          "SkinWallet"
-        ];
-        
-        // Valores aproximados baseados em experiência de mercado (mais realistas)
-        const prices = {
-          "AWP | Asiimov (Field-Tested)": [80.45, 82.30, 79.98, 81.50],
-          "AK-47 | Redline (Field-Tested)": [11.55, 12.00, 11.85, 11.45],
-          "M4A4 | Desolate Space (Factory New)": [25.75, 24.99, 25.50, 26.20],
-          "StatTrak™ CZ75-Auto | Tacticat": [2.50, 2.65, 2.45, 2.55],
-          "Desert Eagle | Blaze (Factory New)": [230.45, 235.20, 232.80, 228.50],
-          "Karambit | Fade (Factory New)": [950.00, 945.50, 960.30, 952.80],
-          "USP-S | Kill Confirmed (Minimal Wear)": [82.75, 84.20, 81.90, 83.50]
-        };
-        
-        // Se o item específico não estiver na lista, mas o tipo for conhecido, fazer estimativa
-        const itemType = getItemType(skinName);
-        if (!prices[skinName] && itemType) {
-          const basePrices = {
-            "AWP": [25, 40, 70, 120],
-            "AK-47": [15, 30, 60, 100],
-            "M4A4": [10, 25, 50, 85],
-            "M4A1-S": [12, 28, 55, 90],
-            "Desert Eagle": [8, 15, 30, 60],
-            "USP-S": [10, 20, 40, 70],
-            "Glock-18": [8, 18, 35, 60],
-            "Knife": [90, 200, 350, 600],
-            "Gloves": [70, 150, 300, 500],
-            "StatTrak™": [1.5, 2, 3, 0] // multiplicador
-          };
-          
-          // Gerar preço base pelo tipo
-          let basePrice = 5; // valor base mínimo
-          if (basePrices[itemType]) {
-            // Selecionar faixa de preço pela qualidade
-            let qualityIndex = 0;
-            if (skinName.includes("Factory New")) qualityIndex = 3;
-            else if (skinName.includes("Minimal Wear")) qualityIndex = 2;
-            else if (skinName.includes("Field-Tested")) qualityIndex = 1;
-            else qualityIndex = 0;
-            
-            basePrice = basePrices[itemType][qualityIndex];
-          }
-          
-          // Ajustar para StatTrak
-          if (skinName.includes("StatTrak™") && basePrices["StatTrak™"]) {
-            const stMultiplier = basePrices["StatTrak™"][Math.floor(Math.random() * 3)];
-            basePrice *= stMultiplier;
-          }
-          
-          // Gerar variações para simular fontes diferentes (variação realista de 1-5%)
-          const basePriceUSD = basePrice;
-          const variations = [];
-          
-          // Gerar preços para 4-6 fontes aleatórias
-          const numSources = 4 + Math.floor(Math.random() * 3);
-          const selectedSources = [...sourcesNames].sort(() => 0.5 - Math.random()).slice(0, numSources);
-          
-          selectedSources.forEach((source, idx) => {
-            const variation = (Math.random() * 0.08) - 0.04; // -4% a +4%
-            variations.push({
-              source: source,
-              price: (basePriceUSD * (1 + variation)).toFixed(2)
-            });
-          });
-          
-          // Aplicar filtro de outliers aos valores
-          const priceValues = variations.map(v => parseFloat(v.price));
-          const filteredPrice = filterOutliersAndCalculateAverage(priceValues);
-          
-          return {
-            market_hash_name: skinName,
-            price: filteredPrice.toFixed(2),
-            prices: variations,
-            filtered: variations.length > 3,
-            offline_mode: true
-          };
-        }
-        
-        // Se temos preços predefinidos para o item, usá-los com nomes de fontes
-        if (prices[skinName]) {
-          // Escolher 4-6 fontes aleatórias
-          const numSources = Math.min(prices[skinName].length, 4 + Math.floor(Math.random() * 3));
-          const selectedSources = [...sourcesNames].sort(() => 0.5 - Math.random()).slice(0, numSources);
-          
-          // Associar preços com fontes
-          const variations = [];
-          for (let i = 0; i < numSources; i++) {
-            variations.push({
-              source: selectedSources[i],
-              price: prices[skinName][i % prices[skinName].length].toFixed(2)
-            });
-          }
-          
-          // Aplicar filtro de outliers
-          const priceValues = variations.map(v => parseFloat(v.price));
-          const filteredPrice = filterOutliersAndCalculateAverage(priceValues);
-          
-          return {
-            market_hash_name: skinName,
-            price: filteredPrice.toFixed(2),
-            prices: variations,
-            filtered: variations.length > 3,
-            offline_mode: true
-          };
-        }
-        
-        // Preços padrão para skins não conhecidas
-        const basePrice = 5 + Math.random() * 20;
-        const variations = [];
-        
-        // Gerar preços para 4-6 fontes aleatórias
-        const numSources = 4 + Math.floor(Math.random() * 3);
-        const selectedSources = [...sourcesNames].sort(() => 0.5 - Math.random()).slice(0, numSources);
-        
-        selectedSources.forEach(source => {
-          const variation = (Math.random() * 0.08) - 0.04; // -4% a +4%
-          variations.push({
-            source: source,
-            price: (basePrice * (1 + variation)).toFixed(2)
-          });
-        });
-        
-        // Aplicar filtro de outliers
-        const priceValues = variations.map(v => parseFloat(v.price));
-        const filteredPrice = filterOutliersAndCalculateAverage(priceValues);
-        
-        return {
-          market_hash_name: skinName,
-          price: filteredPrice.toFixed(2),
-          prices: variations,
-          filtered: variations.length > 3,
-          offline_mode: true
-        };
-      }
-      
-      // Função auxiliar para determinar o tipo de item a partir do nome
-      function getItemType(skinName) {
-        const typeChecks = [
-          { pattern: /AWP/i, type: "AWP" },
-          { pattern: /AK-47/i, type: "AK-47" },
-          { pattern: /M4A4/i, type: "M4A4" },
-          { pattern: /M4A1-S/i, type: "M4A1-S" },
-          { pattern: /Desert Eagle|Deagle/i, type: "Desert Eagle" },
-          { pattern: /USP-S/i, type: "USP-S" },
-          { pattern: /Glock-18/i, type: "Glock-18" },
-          { pattern: /Knife|Karambit|Bayonet|Bowie|Butterfly|Daggers|Falchion|Flip|Gut|Huntsman|Navaja|Shadow|Stiletto|Talon|Ursus|Paracord|Nomad|Skeleton|Survival|Classic/i, type: "Knife" },
-          { pattern: /Gloves|Wraps|Hand/i, type: "Gloves" }
-        ];
-        
-        for (const check of typeChecks) {
-          if (check.pattern.test(skinName)) {
-            return check.type;
-          }
-        }
-        
-        return null;
-      }
-      
-      // Função para filtrar outliers e calcular preço médio mais preciso
-      function filterOutliersAndCalculateAverage(prices) {
-        // Se temos menos de 3 preços, simplesmente calculamos a média
-        if (!prices || prices.length < 3) {
-          if (prices && prices.length > 0) {
-            const sum = prices.reduce((acc, price) => acc + parseFloat(price), 0);
-            return sum / prices.length;
-          }
-          return null;
-        }
-        
-        // Converter para array de números
-        const priceValues = prices.map(p => typeof p === 'number' ? p : parseFloat(p));
-        
-        // Ordenar os preços para calcular a mediana (mais robusta que média para outliers)
-        const sortedPrices = [...priceValues].sort((a, b) => a - b);
-        
-        // Calcular a mediana (valor central)
-        const median = sortedPrices.length % 2 === 0
-          ? (sortedPrices[sortedPrices.length / 2 - 1] + sortedPrices[sortedPrices.length / 2]) / 2
-          : sortedPrices[Math.floor(sortedPrices.length / 2)];
-        
-        // Calcular desvio absoluto mediano (MAD) - medida mais robusta de dispersão
-        const deviations = sortedPrices.map(price => Math.abs(price - median));
-        deviations.sort((a, b) => a - b);
-        const mad = deviations.length % 2 === 0
-          ? (deviations[deviations.length / 2 - 1] + deviations[deviations.length / 2]) / 2
-          : deviations[Math.floor(deviations.length / 2)];
-        
-        // Definir limites para detecção de outliers
-        // 1) Usando MAD com fator de escala (mais robusto para pequenos conjuntos de dados)
-        const madFactor = 2.5; // Fator conservador para não remover muito
-        
-        // 2) Usando também um limite percentual baseado na mediana
-        const percentLimit = 0.4; // 40% de desvio da mediana
-        
-        // Aplicar ambos os critérios para ser um filtro mais preciso
-        const upperLimit = Math.min(
-          median + (madFactor * mad), 
-          median * (1 + percentLimit)
-        );
-        
-        const lowerLimit = Math.max(
-          median - (madFactor * mad),
-          median * (1 - percentLimit),
-          0 // Evitar valores negativos
-        );
-        
-        // Filtrar outliers
-        const filteredPrices = priceValues.filter(price => 
-          price >= lowerLimit && price <= upperLimit
-        );
-        
-        // Se todos os preços foram filtrados, retorne a mediana
-        if (filteredPrices.length === 0) {
-          console.log(`Todos os preços foram considerados outliers. Usando mediana: ${median}`);
-          return median;
-        }
-        
-        // Calcular nova média sem outliers
-        const filteredSum = filteredPrices.reduce((acc, price) => acc + price, 0);
-        const filteredMean = filteredSum / filteredPrices.length;
-        
-        // Log para debug
-        const outliersRemoved = priceValues.length - filteredPrices.length;
-        if (outliersRemoved > 0) {
-          console.log(`Preço processado: Mediana: ${median.toFixed(2)}, Preço filtrado: ${filteredMean.toFixed(2)}`);
-          console.log(`Preços originais: ${priceValues.length}, Preços após filtro: ${filteredPrices.length}, Outliers removidos: ${outliersRemoved}`);
-          console.log(`Limites de filtragem: [${lowerLimit.toFixed(2)} - ${upperLimit.toFixed(2)}]`);
-        }
-        
-        return filteredMean;
-      }
-      
-
-      
-      // Eventos de autenticação
-      if (loginBtn) {
-        loginBtn.addEventListener('click', loginWithSteam);
-      }
-      
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', logout);
-      }
-      
-      // Evento para analisar próprio inventário
-      const myInventoryBtn = document.getElementById('my-inventory-btn');
-      if (myInventoryBtn) {
-        myInventoryBtn.addEventListener('click', analyzeOwnInventory);
-      }
-      
-      // Função para analisar o próprio inventário
-      function analyzeOwnInventory() {
-        if (!authToken) {
-          alert('Você precisa estar logado para analisar seu próprio inventário.');
-          return;
-        }
-        
-        // Exibir loading
-        inventoryResult.style.opacity = '1';
-        inventoryLoading.style.display = 'block';
-        inventoryData.style.display = 'none';
-        
-        // Primeiro, garantir que temos a taxa de câmbio atualizada
-        getExchangeRate().then(() => {
-          // Sempre usar a análise completa incluindo unidades de armazenamento
-          const endpoint = `${API_BASE_URL}/my/inventory/complete`;
-          
-          // Configuração do cabeçalho de autorização (certificando-se de que o token é enviado corretamente)
-          const headers = {
-            'Authorization': `Bearer ${authToken.trim()}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          };
-          
-          console.log('Token enviado:', authToken);
-          console.log('Headers:', headers);
-          console.log(`Fazendo requisição para: ${endpoint}`);
-          
-          // MÉTODO 1: Modificando para usar token como parâmetro de URL
-          // Adicionamos o token como parâmetro de URL em vez de usar headers (evita preflight CORS)
-          const tokenParam = encodeURIComponent(authToken);
-          const urlWithToken = `${endpoint}?token=${tokenParam}`;
-          
-          fetch(urlWithToken, { 
-            method: 'GET',
-            headers: {
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache',
-              'Expires': '0',
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            credentials: 'same-origin',
-            cache: 'no-cache',
-            mode: 'cors' // Mantemos 'cors' pois estamos usando parâmetro de URL
-          })
+          // Faz a requisição para a API
+          fetch(endpoint, { headers })
             .then(response => {
-              console.log('Status da resposta:', response.status);
               if (!response.ok) {
-                return response.json().then(error => {
-                  throw new Error(`Erro ${response.status}: ${error.detail || JSON.stringify(error)}`);
-                });
+                throw new Error('Falha ao buscar dados do inventário');
               }
               return response.json();
             })
             .then(data => {
-              console.log('Dados do inventário recebidos:', data);
-              
-              // Aplicar fator de correção para BRL usando a taxa atual
-              // Função melhorada para aplicar fator de correção a um item e filtrar outliers quando há múltiplas fontes
-              const applyPriceCorrection = (item) => {
-                if (item && item.price) {
-                  // Verificar se o item tem múltiplos preços
-                  if (item.price_sources && Array.isArray(item.price_sources) && item.price_sources.length > 1) {
-                    // Extrair os preços de diferentes fontes
-                    const prices = item.price_sources.map(source => source.price || 0);
-                    
-                    // Usar filtro de outliers para calcular o preço ajustado
-                    const filteredPrice = filterOutliersAndCalculateAverage(prices);
-                    
-                    // Atualizar informações do item
-                    item.original_price = item.price;
-                    item.price = filteredPrice;
-                    item.filtered = true;
-                    item.price_sources_count = item.price_sources.length;
-                    
-                    console.log(`Item filtrado: ${item.name}, Preço original: ${item.original_price}, Preço filtrado: ${item.price}`);
-                  }
-                  
-                  const originalPrice = parseFloat(item.price);
-                  // Apenas aplica a correção se o preço já não estiver em BRL (verificação simples)
-                  if (originalPrice < 100) { // Assumindo que se o preço for menor que 100, está em USD
-                    item.price = originalPrice * CURRENCY_RATES.USD_to_BRL * STEAM_TAX_FACTOR;
-                    if (item.total) {
-                      item.total = item.price * (item.quantity || 1);
-                    }
-                    
-                    // Converter também os preços de fontes individuais, se existirem
-                    if (item.price_sources && Array.isArray(item.price_sources)) {
-                      item.price_sources = item.price_sources.map(source => {
-                        if (source.price) {
-                          source.original_price_usd = source.price;
-                          source.price = parseFloat(source.price) * CURRENCY_RATES.USD_to_BRL * STEAM_TAX_FACTOR;
-                        }
-                        return source;
-                      });
-                    }
-                  }
-                }
-                return item;
-              };
-              
-              // Aplicar correção a todos os itens
-              if (data.items && Array.isArray(data.items)) {
-                data.items = data.items.map(applyPriceCorrection);
-              }
-              
-              // Aplicar correção a todos os itens se usar unidades de armazenamento
-              if (data.all_items && Array.isArray(data.all_items)) {
-                data.all_items = data.all_items.map(applyPriceCorrection);
-              }
-              
-              // Aplicar correção às unidades de armazenamento
-              if (data.storage_unit_contents && Array.isArray(data.storage_unit_contents)) {
-                data.storage_unit_contents.forEach(unit => {
-                  if (unit.contents && unit.contents.items) {
-                    unit.contents.items = unit.contents.items.map(applyPriceCorrection);
-                    // Recalcular o valor total da unidade
-                    unit.contents.total_value = unit.contents.items.reduce((sum, item) => sum + (item.total || item.price || 0), 0);
-                  }
-                });
-                
-                // Recalcular o valor total das unidades
-                data.storage_units_content_value = data.storage_unit_contents.reduce(
-                  (sum, unit) => sum + (unit.contents?.total_value || 0), 0
-                );
-              }
-              
-              // Recalcular os totais
-              if (data.total_value !== undefined) {
-                // Se o backend não aplicou correção, aplicamos aqui
-                if (data.total_value < 1000) { // Verificação simples para ver se já está em BRL
-                  data.total_value = data.total_value * CURRENCY_RATES.USD_to_BRL * STEAM_TAX_FACTOR;
-                }
-              }
-              
-              if (data.grand_total_value !== undefined) {
-                // Se o total já não incluir o valor corrigido das unidades
-                data.grand_total_value = data.total_value + (data.storage_units_content_value || 0);
-              }
-              
               // Determina qual valor total mostrar com base no tipo de resposta
               const totalValue = data.grand_total_value || data.total_value || 0;
               inventoryTotalValue.textContent = formatCurrency(totalValue);
-              
-              // Armazenar dados para exportação
-              lastInventoryData = data;
-              
-              // Calcular estatísticas de filtragem de preços
-              const filteredItemsCount = data.items ? 
-                data.items.filter(item => item.filtered).length : 
-                (data.all_items ? data.all_items.filter(item => item.filtered).length : 0);
               
               // Preenche o resumo
               let summaryHTML = `
@@ -2181,22 +1003,6 @@
                     <span>Valor Médio por Item:</span>
                     <span style="font-weight: 600;">${formatCurrency((totalValue) / (data.total_items || 1))}</span>
                   </div>`;
-                  
-              // Adicionar informações sobre a taxa de câmbio
-              summaryHTML += `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                  <span>Taxa USD → BRL:</span>
-                  <span style="font-weight: 600;">1 USD = ${CURRENCY_RATES.USD_to_BRL.toFixed(2)} BRL</span>
-                </div>`;
-                
-              // Adicionar informação sobre itens com preços filtrados
-              if (filteredItemsCount > 0) {
-                summaryHTML += `
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span>Itens com preços filtrados:</span>
-                    <span style="font-weight: 600; color: var(--cs2-accent-green);">${filteredItemsCount}</span>
-                  </div>`;
-              }
                   
               // Adicionar informações sobre unidades de armazenamento se disponíveis
               if (data.storage_units_content_value !== undefined) {
@@ -2271,13 +1077,313 @@
               inventoryData.style.display = 'block';
               inventorySummary.innerHTML = `
                 <div style="padding: 15px; background: rgba(221,51,51,0.2); border-radius: 8px; border-left: 3px solid var(--cs2-danger-red);">
-                  <p style="color: var(--cs2-text-light);">Erro ao analisar seu inventário. Por favor, tente novamente mais tarde.</p>
-                  <p style="color: var(--cs2-text-light); margin-top: 8px;">Se o erro persistir, tente desconectar e conectar novamente.</p>
+                  <p style="color: var(--cs2-text-light);">Erro ao analisar inventário. Verifique se o ID está correto e se o perfil é público.</p>
+                  ${authToken && useStorageUnits ? '<p style="color: var(--cs2-text-light); margin-top: 8px;">Para acessar Unidades de Armazenamento, você precisa estar autenticado na Steam com as permissões corretas.</p>' : ''}
                 </div>
               `;
               inventoryItems.innerHTML = '';
             });
         });
+      }
+      
+      // Buscar preço
+      if (priceBtn) {
+        priceBtn.addEventListener('click', () => {
+          const skinName = skinNameInput.value.trim();
+          
+          if (!skinName) {
+            alert('Por favor, insira o nome da skin');
+            return;
+          }
+          
+          // Exibir loading
+          priceResult.style.opacity = '1';
+          priceLoading.style.display = 'block';
+          priceData.style.display = 'none';
+          
+          // Faz a requisição para a API
+          fetch(`${API_BASE_URL}/price/${encodeURIComponent(skinName)}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Falha ao buscar preço da skin');
+              }
+              return response.json();
+            })
+            .then(data => {
+              // Preenche as informações da skin
+              const priceInfoHTML = `
+                <div style="padding: 15px; background: rgba(19,30,43,0.5); border-radius: 8px; margin-bottom: 1rem;">
+                  <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1rem; font-size: 1.4rem;">${data.name || skinName}</h3>
+                  
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Preço Atual:</span>
+                    <span style="font-weight: 700; color: var(--cs2-accent-orange);">${formatCurrency(data.price || 0)}</span>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Volume (7d):</span>
+                    <span style="font-weight: 600;">${data.volume || 'N/A'}</span>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Categoria:</span>
+                    <span style="font-weight: 600;">${data.type || 'N/A'}</span>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>Raridade:</span>
+                    <span style="font-weight: 600; color: ${getRarityColor(data.rarity)};">${data.rarity || 'N/A'}</span>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                  <a href="https://steamcommunity.com/market/listings/730/${encodeURIComponent(skinName)}" target="_blank" class="btn btn-outline" style="display: inline-block; padding: 10px 20px; font-family: 'Teko', sans-serif; font-size: 1.2rem; background-color: rgba(255, 215, 0, 0.1); border: 2px solid var(--cs2-primary-gold); color: var(--cs2-primary-gold); text-decoration: none; transition: all 0.3s ease; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">
+                    VER NO MERCADO STEAM
+                  </a>
+                </div>
+              `;
+              
+              priceInfo.innerHTML = priceInfoHTML;
+              
+              // Exibe os dados
+              priceLoading.style.display = 'none';
+              priceData.style.display = 'block';
+            })
+            .catch(error => {
+              console.error('Erro ao buscar preço:', error);
+              priceLoading.style.display = 'none';
+              priceData.style.display = 'block';
+              priceInfo.innerHTML = `
+                <div style="padding: 15px; background: rgba(221,51,51,0.2); border-radius: 8px; border-left: 3px solid var(--cs2-danger-red);">
+                  <p style="color: var(--cs2-text-light);">Erro ao buscar preço da skin. Verifique se o nome está correto e tente novamente.</p>
+                </div>
+              `;
+            });
+        });
+      }
+      
+      // Buscar informações da caixa
+      if (caseBtn) {
+        caseBtn.addEventListener('click', () => {
+          const caseName = caseSelect.value;
+          
+          if (!caseName) {
+            alert('Por favor, selecione uma caixa');
+            return;
+          }
+          
+          // Exibir loading
+          caseResult.style.opacity = '1';
+          caseLoading.style.display = 'block';
+          caseData.style.display = 'none';
+          
+          // Faz a requisição para a API (agora simplificada conforme log_alteracoes.txt)
+          fetch(`${API_BASE_URL}/case/${encodeURIComponent(caseName)}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Falha ao buscar informações da caixa');
+              }
+              return response.json();
+            })
+            .then(data => {
+              // Preenche o preço da caixa
+              casePrice.textContent = formatCurrency(data.price || 0);
+              
+              // Exibe informações simplificadas da caixa (sem itens internos detalhados)
+              const caseItemsHTML = `
+                <div style="padding: 15px; background: rgba(19,30,43,0.5); border-radius: 8px; margin-bottom: 1rem;">
+                  <h3 style="font-family: 'Orbitron', sans-serif; color:var(--cs2-primary-gold); margin-bottom:1rem; font-size: 1.4rem;">${data.name || caseName}</h3>
+                  
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Preço Atual:</span>
+                    <span style="font-weight: 700; color: var(--cs2-accent-orange);">${formatCurrency(data.price || 0)}</span>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Volume (7d):</span>
+                    <span style="font-weight: 600;">${data.volume || 'N/A'}</span>
+                  </div>
+                  
+                  <div style="margin-top: 20px; text-align: center; color: var(--cs2-text-light); opacity: 0.7;">
+                    <p>Para obter informações detalhadas sobre o conteúdo desta caixa, visite a página da caixa no Steam Market.</p>
+                  </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                  <a href="https://steamcommunity.com/market/listings/730/${encodeURIComponent(caseName)}" target="_blank" class="btn btn-outline" style="display: inline-block; padding: 10px 20px; font-family: 'Teko', sans-serif; font-size: 1.2rem; background-color: rgba(255, 215, 0, 0.1); border: 2px solid var(--cs2-primary-gold); color: var(--cs2-primary-gold); text-decoration: none; transition: all 0.3s ease; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">
+                    VER NO MERCADO STEAM
+                  </a>
+                </div>
+              `;
+              
+              caseItems.innerHTML = caseItemsHTML;
+              
+              // Exibe os dados
+              caseLoading.style.display = 'none';
+              caseData.style.display = 'block';
+            })
+            .catch(error => {
+              console.error('Erro ao buscar informações da caixa:', error);
+              caseLoading.style.display = 'none';
+              caseData.style.display = 'block';
+              caseItems.innerHTML = `
+                <div style="padding: 15px; background: rgba(221,51,51,0.2); border-radius: 8px; border-left: 3px solid var(--cs2-danger-red);">
+                  <p style="color: var(--cs2-text-light);">Erro ao carregar informações da caixa. Tente novamente mais tarde.</p>
+                </div>
+              `;
+            });
+        });
+      }
+      
+      // Eventos de autenticação
+      if (loginBtn) {
+        loginBtn.addEventListener('click', loginWithSteam);
+      }
+      
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+      }
+      
+      // Evento para analisar próprio inventário
+      const myInventoryBtn = document.getElementById('my-inventory-btn');
+      if (myInventoryBtn) {
+        myInventoryBtn.addEventListener('click', analyzeOwnInventory);
+      }
+      
+      // Função para analisar o próprio inventário
+      function analyzeOwnInventory() {
+        if (!authToken) {
+          alert('Você precisa estar logado para analisar seu próprio inventário.');
+          return;
+        }
+        
+        // Exibir loading
+        inventoryResult.style.opacity = '1';
+        inventoryLoading.style.display = 'block';
+        inventoryData.style.display = 'none';
+        
+        // Define endpoint baseado na seleção de análise completa e unidades de armazenamento
+        let endpoint;
+        const headers = {
+          'Authorization': `Bearer ${authToken}`
+        };
+        const useStorageUnits = storageUnitSwitch && storageUnitSwitch.querySelector('input').checked;
+        
+        if (useStorageUnits) {
+          // Análise completa incluindo unidades de armazenamento
+          endpoint = `${API_BASE_URL}/my/inventory/complete`;
+        } else if (fullAnalysisCheckbox.checked) {
+          // Análise detalhada do próprio inventário
+          endpoint = `${API_BASE_URL}/my/inventory/full`;
+        } else {
+          // Análise básica do próprio inventário
+          endpoint = `${API_BASE_URL}/my/inventory`;
+        }
+        
+        // Faz a requisição para a API
+        fetch(endpoint, { headers })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Falha ao buscar dados do inventário');
+            }
+            return response.json();
+          })
+          .then(data => {
+            // Determina qual valor total mostrar com base no tipo de resposta
+            const totalValue = data.grand_total_value || data.total_value || 0;
+            inventoryTotalValue.textContent = formatCurrency(totalValue);
+            
+            // Preenche o resumo
+            let summaryHTML = `
+              <div style="margin-bottom: 1.5rem; padding: 15px; background: rgba(19,30,43,0.5); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Total de Itens:</span>
+                  <span style="font-weight: 600;">${data.total_items || 0}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Valor Médio por Item:</span>
+                  <span style="font-weight: 600;">${formatCurrency((totalValue) / (data.total_items || 1))}</span>
+                </div>`;
+                
+            // Adicionar informações sobre unidades de armazenamento se disponíveis
+            if (data.storage_units_content_value !== undefined) {
+              summaryHTML += `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Valor em Unidades:</span>
+                  <span style="font-weight: 600;">${formatCurrency(data.storage_units_content_value)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span>Valor em Inventário:</span>
+                  <span style="font-weight: 600;">${formatCurrency(data.total_value)}</span>
+                </div>
+              `;
+            }
+            
+            // Adicionar item mais valioso se disponível
+            if (data.most_valuable_item) {
+              summaryHTML += `
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Item Mais Valioso:</span>
+                  <span style="font-weight: 600; color: var(--cs2-accent-orange);">${data.most_valuable_item?.name || 'N/A'}</span>
+                </div>
+              `;
+            }
+            
+            summaryHTML += `</div>`;
+            inventorySummary.innerHTML = summaryHTML;
+            
+            // Preenche a lista de itens
+            let itemsHTML = '<h4 style="font-family: \'Orbitron\', sans-serif; color: var(--cs2-primary-gold); margin: 1rem 0; font-size: 1.1rem;">Itens Mais Valiosos</h4>';
+            
+            // Determinar quais itens mostrar com base no tipo de resposta
+            let itemsToShow = [];
+            
+            if (data.all_items && data.all_items.length > 0) {
+              // Resposta da análise com unidades de armazenamento
+              itemsToShow = data.all_items;
+            } else if (data.items && data.items.length > 0) {
+              // Resposta normal
+              itemsToShow = data.items;
+            }
+            
+            // Adiciona itens se disponíveis
+            if (itemsToShow.length > 0) {
+              itemsToShow.sort((a, b) => b.price - a.price).slice(0, 10).forEach(item => {
+                itemsHTML += createItemCard(item);
+              });
+            } else {
+              itemsHTML += '<p style="color: var(--cs2-text-light); opacity: 0.7;">Nenhum item encontrado</p>';
+            }
+            
+            // Adicionar seção de unidades de armazenamento se disponível
+            if (data.storage_unit_contents && data.storage_unit_contents.length > 0) {
+              itemsHTML += `
+                <h4 style="font-family: 'Orbitron', sans-serif; color: var(--cs2-primary-gold); margin: 1.5rem 0 1rem; font-size: 1.1rem; border-top: 1px solid rgba(255,215,0,0.2); padding-top: 1.5rem;">Unidades de Armazenamento</h4>
+              `;
+              
+              data.storage_unit_contents.forEach(unit => {
+                itemsHTML += createStorageUnitCard(unit);
+              });
+            }
+            
+            inventoryItems.innerHTML = itemsHTML;
+            
+            // Exibe os dados
+            inventoryLoading.style.display = 'none';
+            inventoryData.style.display = 'block';
+          })
+          .catch(error => {
+            console.error('Erro ao analisar inventário:', error);
+            inventoryLoading.style.display = 'none';
+            inventoryData.style.display = 'block';
+            inventorySummary.innerHTML = `
+              <div style="padding: 15px; background: rgba(221,51,51,0.2); border-radius: 8px; border-left: 3px solid var(--cs2-danger-red);">
+                <p style="color: var(--cs2-text-light);">Erro ao analisar seu inventário. Por favor, tente novamente mais tarde.</p>
+                <p style="color: var(--cs2-text-light); margin-top: 8px;">Se o erro persistir, tente desconectar e conectar novamente.</p>
+              </div>
+            `;
+            inventoryItems.innerHTML = '';
+          });
       }
       
       // Adicionar animação de rotação para o loading
@@ -2290,219 +1396,15 @@
       `;
       document.head.appendChild(styleElement);
       
-      // Taxa de câmbio padrão (caso a API falhe)
-      let CURRENCY_RATES = {
-        USD_to_BRL: 5.05,
-        EUR_to_BRL: 5.85,
-        GBP_to_BRL: 6.70
-      };
-      const STEAM_TAX_FACTOR = 1.0; // Sem fator de taxa adicional
-      
-      // Função para converter qualquer moeda para BRL
-      function convertToBRL(price, currency) {
-        if (!price || isNaN(parseFloat(price))) return 0;
-        
-        price = parseFloat(price);
-        
-        // Já está em BRL
-        if (currency === 'BRL') return price;
-        
-        // Converter com base na moeda
-        if (currency === 'USD') {
-          return price * CURRENCY_RATES.USD_to_BRL;
-        } else if (currency === 'EUR') {
-          return price * CURRENCY_RATES.EUR_to_BRL;
-        } else if (currency === 'GBP') {
-          return price * CURRENCY_RATES.GBP_to_BRL;
-        }
-        
-        // Moeda não suportada, usar USD como padrão
-        console.warn(`Moeda ${currency} não suportada, usando conversão de USD`);
-        return price * CURRENCY_RATES.USD_to_BRL;
-      }
-      
-      // Função para obter a taxa de câmbio atualizada
-      async function getExchangeRate() {
-        // Referências aos elementos do indicador visual
-        const exchangeRateIndicator = document.getElementById('exchange-rate-indicator');
-        const exchangeRateText = document.getElementById('exchange-rate-text');
-        
-        // Atualizar indicador visual
-        if (exchangeRateIndicator) {
-          exchangeRateIndicator.style.backgroundColor = '#777';
-          exchangeRateText.textContent = 'Atualizando taxa de câmbio...';
-        }
-        
-        try {
-          // Verificar se já temos taxas armazenadas e se ainda são válidas (menos de 24 horas)
-          const savedRates = localStorage.getItem('exchange_rates');
-          const savedTimestamp = localStorage.getItem('exchange_rate_timestamp');
-          
-          if (savedRates && savedTimestamp) {
-            const rateAge = Date.now() - parseInt(savedTimestamp);
-            // Se a taxa foi atualizada nas últimas 24 horas, usá-la
-            if (rateAge < 24 * 60 * 60 * 1000) {
-              console.log('Usando taxas de câmbio em cache');
-              CURRENCY_RATES = JSON.parse(savedRates);
-              
-              // Atualizar indicador visual
-              if (exchangeRateIndicator) {
-                exchangeRateIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
-                exchangeRateText.textContent = `1 USD = ${CURRENCY_RATES.USD_to_BRL.toFixed(2)} BRL`;
-              }
-              
-              return CURRENCY_RATES;
-            }
-          }
-          
-          // Caso contrário, buscar nova taxa
-          // Usando API gratuita de Exchange Rates
-          const response = await fetch('https://open.er-api.com/v6/latest/USD', {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json'
-            },
-            mode: 'cors',
-            cache: 'no-cache'
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            
-            if (data && data.rates) {
-              // Atualizar todas as taxas
-              CURRENCY_RATES = {
-                USD_to_BRL: data.rates.BRL || 5.05,
-                EUR_to_BRL: data.rates.BRL / data.rates.EUR || 5.85,
-                GBP_to_BRL: data.rates.BRL / data.rates.GBP || 6.70
-              };
-              
-              console.log('Taxas de câmbio atualizadas:', CURRENCY_RATES);
-              
-              // Armazenar as novas taxas e timestamp
-              localStorage.setItem('exchange_rates', JSON.stringify(CURRENCY_RATES));
-              localStorage.setItem('exchange_rate_timestamp', Date.now().toString());
-              
-              // Atualizar indicador visual
-              if (exchangeRateIndicator) {
-                exchangeRateIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
-                exchangeRateText.textContent = `1 USD = ${CURRENCY_RATES.USD_to_BRL.toFixed(2)} BRL`;
-              }
-              
-              return CURRENCY_RATES;
-            }
-          }
-          
-          throw new Error('Não foi possível obter as taxas de câmbio atuais');
-        } catch (error) {
-          console.warn('Erro ao buscar taxas de câmbio:', error);
-          
-          // Buscar alternativa se a primeira API falhar
-          try {
-            const altResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json'
-              },
-              mode: 'cors'
-            });
-            
-            if (altResponse.ok) {
-              const altData = await altResponse.json();
-              if (altData && altData.rates) {
-                // Atualizar todas as taxas
-                CURRENCY_RATES = {
-                  USD_to_BRL: altData.rates.BRL || 5.05,
-                  EUR_to_BRL: altData.rates.BRL / altData.rates.EUR || 5.85,
-                  GBP_to_BRL: altData.rates.BRL / altData.rates.GBP || 6.70
-                };
-                
-                console.log('Taxas de câmbio alternativas:', CURRENCY_RATES);
-                
-                localStorage.setItem('exchange_rates', JSON.stringify(CURRENCY_RATES));
-                localStorage.setItem('exchange_rate_timestamp', Date.now().toString());
-                
-                // Atualizar indicador visual
-                if (exchangeRateIndicator) {
-                  exchangeRateIndicator.style.backgroundColor = 'var(--cs2-accent-green)';
-                  exchangeRateText.textContent = `1 USD = ${CURRENCY_RATES.USD_to_BRL.toFixed(2)} BRL`;
-                }
-                
-                return CURRENCY_RATES;
-              }
-            }
-          } catch (altError) {
-            console.warn('Erro na API alternativa de câmbio:', altError);
-          }
-          
-          // Se todas as APIs falharem, usar os valores padrão
-          console.log('Usando taxas de câmbio padrão:', CURRENCY_RATES);
-          
-          // Atualizar indicador visual
-          if (exchangeRateIndicator) {
-            exchangeRateIndicator.style.backgroundColor = 'var(--cs2-danger-red)';
-            exchangeRateText.textContent = `Taxa offline: 1 USD = ${CURRENCY_RATES.USD_to_BRL.toFixed(2)} BRL`;
-          }
-          
-          return CURRENCY_RATES;
-        }
-      }
-      
       // Inicialização
       checkApiStatus();  // Verificar status da API
       processUrlParams(); // Processar parâmetros de URL para auth
       checkAuthStatus();  // Verificar estado de autenticação
-      getExchangeRate(); // Buscar taxa de câmbio atual
       
-      // Adicionar event listeners para botões
-      if (priceBtn) {
-        console.log('Adicionando event listener para o botão de busca de preço');
-        priceBtn.addEventListener('click', getPrice);
-      }
-      
-      // A funcionalidade de caixas foi removida
-      
-      // Conectar o botão de exportar Excel com a função
-      if (exportExcelBtn) {
-        exportExcelBtn.addEventListener('click', () => {
-          // Verificar se há dados para exportar
-          if (lastInventoryData) {
-            exportToExcel(lastInventoryData);
-          } else {
-            alert('Nenhum dado disponível para exportar. Faça uma análise de inventário primeiro.');
-          }
-        });
-      }
-      
-      // Conectar o botão de gerar dashboard com a função
-      const generateDashboardBtn = document.getElementById('generate-dashboard-btn');
-      if (generateDashboardBtn) {
-        generateDashboardBtn.addEventListener('click', () => {
-          // Verificar se há dados para gerar a dashboard
-          if (lastInventoryData) {
-            generateDashboard(lastInventoryData);
-          } else {
-            alert('Nenhum dado disponível para gerar dashboard. Faça uma análise de inventário primeiro.');
-          }
-        });
-      }
+      // Verificar status da API a cada 60 segundos
+      setInterval(checkApiStatus, 60000);
     });
-    
-    // Função para gerar dashboard interativa com Plotly
-    function generateDashboard(data) {
-      if (!data || !data.items || data.items.length === 0) {
-        alert('Nenhum dado disponível para gerar dashboard. Faça uma análise de inventário primeiro.');
-        return;
-      }
-      
-      console.log('Gerando dashboard interativa...');
-      
-      // Armazenar os dados no localStorage para que o dashboard.html possa acessá-los
-      localStorage.setItem('inventoryData', JSON.stringify(data));
-      
-      // Abrir o dashboard em uma nova janela
-      window.open('dashboard.html', '_blank');
-    }
   </script>
 </body>
+
 </html>
