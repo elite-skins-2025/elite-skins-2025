@@ -2504,5 +2504,26 @@
       window.open('dashboard.html', '_blank');
     }
   </script>
+
+  <!-- Script para rolagem suave ao topo -->
+  <script>
+    // Captura todos os links com a classe scroll-top-link
+    document.addEventListener('DOMContentLoaded', function() {
+      const scrollTopLinks = document.querySelectorAll('.scroll-top-link');
+      
+      scrollTopLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          // Previne o comportamento padrão do link
+          e.preventDefault();
+          
+          // Rola para o topo da página com efeito suave
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+  </script>
 </body>
 </html>
